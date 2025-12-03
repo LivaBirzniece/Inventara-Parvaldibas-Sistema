@@ -1,6 +1,7 @@
 package InventaraParvaldibasSistema;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
@@ -9,28 +10,50 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class IPS {
+	private JFrame frame;
+	
 	
 	public IPS() {
 
-		JFrame frame = new JFrame();
-		JPanel main = new JPanel();
-		main.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
-		main.setLayout(new GridLayout(0,1));
+		frame = new JFrame();
+		CardLayout cardLayout = new CardLayout();
+		JPanel cardPanel = new JPanel(cardLayout);
 		
-		frame.add(main, BorderLayout.CENTER);
+		
+		
+		JPanel main = new JPanel(new GridLayout(0,1));
+		JPanel pievienot = new JPanel();
+		JPanel nonemt = new JPanel();
+		JPanel paradit = new JPanel();
+		JPanel teksts = new JPanel();
+		
+		cardPanel.add(main,"Galvenā lapa");
+		cardPanel.add(pievienot,"Pievienot");
+		cardPanel.add(nonemt,"Noņemt");
+		cardPanel.add(paradit,"Parādīt");
+		cardPanel.add(teksts,"Faila izveide");
+		
+		
+		main.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
+		
+		
+		frame.add(cardPanel, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Inventāra Pārvaldibas Sistēma");
 		
 		/*pogas galvenajam ekranam*/
-		JButton pievienot = new JButton("Pievienot produktu");
-		JButton nonemt = new JButton("Noņemt produktu");
-		JButton paradit = new JButton("Parādīt visus produktus");
-		JButton teksts = new JButton("Pārtaisīt produktu sarakstu teksta failā");
+		JButton pievienot1 = new JButton("Pievienot produktu");
+		JButton nonemt2 = new JButton("Noņemt produktu");
+		JButton paradit3 = new JButton("Parādīt visus produktus");
+		JButton teksts4 = new JButton("Pārtaisīt produktu sarakstu teksta failā");
 		
-		main.add(pievienot);
-		main.add(nonemt);
-		main.add(paradit);
-		main.add(teksts);
+		main.add(pievienot1);
+		main.add(nonemt2);
+		main.add(paradit3);
+		main.add(teksts4);
+		
+		
+		
 		
 		frame.pack();
 		frame.setVisible(true);
