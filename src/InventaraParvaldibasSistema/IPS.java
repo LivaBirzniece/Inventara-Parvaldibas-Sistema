@@ -10,10 +10,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import java.util.HashMap;
+
 
 public class IPS implements ActionListener{
 	private JFrame frame;
-	
+	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
 	
 	public IPS() {
 
@@ -58,6 +62,23 @@ public class IPS implements ActionListener{
 		
 		JButton pievienotProduktu = new JButton("Pievienot jaunu produktu");
 		pievienot.add(pievienotProduktu);
+		JTextField produkts = new JTextField(16);
+		pievienot.add(produkts);
+		JTextField skaits = new JTextField(16);
+		pievienot.add(skaits);
+		
+		pievienotProduktu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String ProduktaNosaukums = produkts.getText().trim();
+				String ProduktaSkaits = skaits.getText().trim();
+				ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
+				
+			}
+			
+		
+		});
 		
 		/*pogas nonemsanas panelim*/
 		JButton nonemtProduktu = new JButton("Noņemt produktu");
@@ -77,19 +98,19 @@ public class IPS implements ActionListener{
 	
 	
 	/* Metodes / funkcijias */
-	public void Pievienosana() {
+	void Pievienosana() {
 		
 	}
 	
-	public void Nonemsana() {
+	void Nonemsana() {
 		
 	}
 	
-	public void Paradit() {
+	void Paradit() {
 		
 	}
 	
-	public void TekstaFails() {
+	void TekstaFails() {
 		
 	}
 	
