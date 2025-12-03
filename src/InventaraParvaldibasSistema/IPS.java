@@ -3,13 +3,15 @@ package InventaraParvaldibasSistema;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class IPS {
+public class IPS implements ActionListener{
 	private JFrame frame;
 	
 	
@@ -78,6 +80,14 @@ public class IPS {
 	public static void main(String[] args) {
 		new IPS();
 
+	}
+
+
+	/* lai izmantotu katrai pogai, šis ir jaliek pie pašas pogas*/
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		
 	}
 
 }
