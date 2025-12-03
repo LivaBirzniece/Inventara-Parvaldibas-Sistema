@@ -8,10 +8,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import java.util.HashMaps;
+import java.util.Scanner;
+
 public class IPS {
 	
 	public IPS() {
-
+	/* GUI */
 		JFrame frame = new JFrame();
 		JPanel main = new JPanel();
 		main.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
@@ -36,6 +39,23 @@ public class IPS {
 		frame.setVisible(true);
 	}
 	
+	
+	/* Metodes / funkcijias */
+	public void Pievienosana() {
+		
+	}
+	
+	public void Nonemsana() {
+		
+	}
+	
+	public void Paradit() {
+		
+	}
+	
+	public void TekstaFails() {
+		
+	}
 	
 
 	public static void main(String[] args) {
