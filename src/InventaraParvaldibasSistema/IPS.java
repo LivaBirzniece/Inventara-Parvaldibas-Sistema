@@ -52,6 +52,20 @@ public class IPS {
 		main.add(paradit3);
 		main.add(teksts4);
 		
+		/*pogas pievienosanas panelim*/
+		
+		JButton pievienotProduktu = new JButton("Pievienot jaunu produktu");
+		pievienot.add(pievienotProduktu);
+		
+		/*pogas nonemsanas panelim*/
+		JButton nonemtProduktu = new JButton("Noņemt produktu");
+		nonemt.add(nonemtProduktu);
+		
+		/*Funkcijas, kas ļauj pārslēgties uz citu paneli*/
+		pievienot1.addActionListener(e -> cardLayout.show(cardPanel, "Pievienot"));
+		nonemt2.addActionListener(e -> cardLayout.show(cardPanel, "Noņemt"));
+		paradit3.addActionListener(e -> cardLayout.show(cardPanel, "Parādīt"));
+		teksts4.addActionListener(e -> cardLayout.show(cardPanel, "Faila izveide"));
 		
 		
 		
@@ -59,7 +73,7 @@ public class IPS {
 		frame.setVisible(true);
 	}
 	
-	
+
 
 	public static void main(String[] args) {
 		new IPS();
