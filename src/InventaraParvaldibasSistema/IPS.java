@@ -13,28 +13,30 @@ public class IPS {
 	public IPS() {
 
 		JFrame frame = new JFrame();
-		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
-		panel.setLayout(new GridLayout(0,1));
+		JPanel main = new JPanel();
+		main.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
+		main.setLayout(new GridLayout(0,1));
 		
-		frame.add(panel, BorderLayout.CENTER);
+		frame.add(main, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("Inventara Parvaldibas Sistema");
+		frame.setTitle("Inventāra Pārvaldibas Sistēma");
 		
-		//pogas
+		/*pogas galvenajam ekranam*/
 		JButton pievienot = new JButton("Pievienot produktu");
 		JButton nonemt = new JButton("Noņemt produktu");
 		JButton paradit = new JButton("Parādīt visus produktus");
 		JButton teksts = new JButton("Pārtaisīt produktu sarakstu teksta failā");
 		
-		panel.add(pievienot);
-		panel.add(nonemt);
-		panel.add(paradit);
-		panel.add(teksts);
+		main.add(pievienot);
+		main.add(nonemt);
+		main.add(paradit);
+		main.add(teksts);
 		
 		frame.pack();
 		frame.setVisible(true);
 	}
+	
+	
 
 	public static void main(String[] args) {
 		new IPS();
