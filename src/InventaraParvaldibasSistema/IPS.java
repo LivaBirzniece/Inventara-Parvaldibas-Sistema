@@ -10,7 +10,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 
 import java.util.HashMap;
 
@@ -20,7 +22,8 @@ public class IPS implements ActionListener{
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
 	
 	public IPS() {
-
+		
+		JTextArea tekstsIzdrukat = new JTextArea(16,16);
 		frame = new JFrame();
 		CardLayout cardLayout = new CardLayout();
 		JPanel cardPanel = new JPanel(cardLayout);
@@ -66,6 +69,25 @@ public class IPS implements ActionListener{
 		pievienot.add(produkts);
 		JTextField skaits = new JTextField(16);
 		pievienot.add(skaits);
+		
+		/*----------------------------------------------*/
+		/*Testa poga, lai redzetu vai strada hashmap*/
+//		JButton paraditHashmap = new JButton("PARADIT");
+//		pievienot.add(paraditHashmap);
+//		paraditHashmap.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				tekstsIzdrukat.setEditable(false);
+//				/* Šeit vajag noformēt, lai nerādas { } */
+//				tekstsIzdrukat.setText(ProduktuSaraksts.toString());
+//				pievienot.add(tekstsIzdrukat);
+//				
+//			}
+//			
+//		});
+		/*---------------------------------------------------*/
+		
 		
 		pievienotProduktu.addActionListener(new ActionListener() {
 
