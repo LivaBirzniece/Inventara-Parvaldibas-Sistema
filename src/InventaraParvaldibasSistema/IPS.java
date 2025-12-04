@@ -8,13 +8,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
 import java.util.HashMap;
+
 
 
 public class IPS implements ActionListener{
@@ -23,7 +26,8 @@ public class IPS implements ActionListener{
 	
 	public IPS() {
 		
-		JTextArea tekstsIzdrukat = new JTextArea(16,16);
+     	JTextArea tekstsIzdrukat = new JTextArea(16,16);
+		
 		frame = new JFrame();
 		CardLayout cardLayout = new CardLayout();
 		JPanel cardPanel = new JPanel(cardLayout);
@@ -70,6 +74,23 @@ public class IPS implements ActionListener{
 		JTextField skaits = new JTextField(16);
 		pievienot.add(skaits);
 		
+		
+		pievienotProduktu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String ProduktaNosaukums = produkts.getText().trim();
+				String ProduktaSkaits = skaits.getText().trim();
+				ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
+				produkts.setText("");
+				skaits.setText("");
+				
+			}
+			
+		
+		});
+		
+		
 		/*----------------------------------------------*/
 		/*Testa poga, lai redzetu vai strada hashmap*/
 //		JButton paraditHashmap = new JButton("PARADIT");
@@ -88,23 +109,30 @@ public class IPS implements ActionListener{
 //		});
 		/*---------------------------------------------------*/
 		
-		
-		pievienotProduktu.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String ProduktaNosaukums = produkts.getText().trim();
-				String ProduktaSkaits = skaits.getText().trim();
-				ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
-				
-			}
-			
-		
-		});
-		
 		/*pogas nonemsanas panelim*/
 		JButton nonemtProduktu = new JButton("Noņemt produktu");
 		nonemt.add(nonemtProduktu);
+		
+		
+		JCheckBox check = new JCheckBox();
+		
+		String[] columnNames = {"Nosaukums", "Skaits"};
+		
+	  
+	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
+	    int i = 0;
+	    for(String key: ProduktuSaraksts.keySet()) {
+	    	DatiHM[i][0] = key;
+	    	DatiHM[i][1] = ProduktuSaraksts.get(key);
+	    	i++;
+	    }
+		
+		
+		JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
+		nonemt.add(ProduktuParadisana);
+		
+		
+		
 		
 		/*Funkcijas, kas ļauj pārslēgties uz citu paneli*/
 		pievienot1.addActionListener(e -> cardLayout.show(cardPanel, "Pievienot"));
@@ -119,34 +147,15 @@ public class IPS implements ActionListener{
 	}
 	
 	
-	/* Metodes / funkcijias */
-	void Pievienosana() {
-		
-	}
-	
-	void Nonemsana() {
-		
-	}
-	
-	void Paradit() {
-		
-	}
-	
-	void TekstaFails() {
-		
-	}
-	
-
 	public static void main(String[] args) {
 		new IPS();
 
 	}
 
 
-	/* lai izmantotu katrai pogai, šis ir jaliek pie pašas pogas*/
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		// TODO Auto-generated method stub
 		
 	}
 
