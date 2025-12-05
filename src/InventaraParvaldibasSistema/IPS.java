@@ -5,18 +5,17 @@ import java.awt.CardLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-
-import java.util.HashMap;
 
 
 
@@ -65,6 +64,10 @@ public class IPS implements ActionListener{
 		main.add(paradit3);
 		main.add(teksts4);
 		
+		/*Poga, kas ļauj iet atpakal uz galveno lapu*/
+		
+		
+		
 		/*pogas pievienosanas panelim*/
 		
 		JButton pievienotProduktu = new JButton("Pievienot jaunu produktu");
@@ -73,7 +76,9 @@ public class IPS implements ActionListener{
 		pievienot.add(produkts);
 		JTextField skaits = new JTextField(16);
 		pievienot.add(skaits);
-		
+		JButton atpakalP = new JButton("Uz galveno lapu");
+		atpakalP.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
+		pievienot.add(atpakalP);
 		
 		pievienotProduktu.addActionListener(new ActionListener() {
 
@@ -91,24 +96,8 @@ public class IPS implements ActionListener{
 		});
 		
 		
-		/*----------------------------------------------*/
-		/*Testa poga, lai redzetu vai strada hashmap*/
-//		JButton paraditHashmap = new JButton("PARADIT");
-//		pievienot.add(paraditHashmap);
-//		paraditHashmap.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				tekstsIzdrukat.setEditable(false);
-//				/* Šeit vajag noformēt, lai nerādas { } */
-//				tekstsIzdrukat.setText(ProduktuSaraksts.toString());
-//				pievienot.add(tekstsIzdrukat);
-//				
-//			}
-//			
-//		});
-		/*---------------------------------------------------*/
 		
+
 		/*pogas nonemsanas panelim*/
 		JButton nonemtProduktu = new JButton("Noņemt produktu");
 		nonemt.add(nonemtProduktu);
@@ -130,9 +119,47 @@ public class IPS implements ActionListener{
 		
 		JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
 		nonemt.add(ProduktuParadisana);
+		JButton atpakalN = new JButton("Uz galveno lapu");
+		atpakalN.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
+		nonemt.add(atpakalN);
+		
+		/*pogas skatisanas paneli*/
+		
+		JButton ParaditProduktu = new JButton("Parādīt visus produktus");
+		paradit.add(ParaditProduktu);
+		JPanel Tabula = new JPanel();
+		paradit.add(Tabula);
+		
+		ParaditProduktu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String[] columnNamesP = {"Nosaukums", "Skaits"};
+		
+		  
+				Object[][] DatiHMP = new Object[ProduktuSaraksts.size()][2];
+				int i = 0;
+				for(String key: ProduktuSaraksts.keySet()) {
+					DatiHMP[i][0] = key;
+					DatiHMP[i][1] = ProduktuSaraksts.get(key);
+					i++;
+				}
+				JTable ProduktuParadisanaP = new JTable(DatiHMP, columnNamesP);
+				JScrollPane scroll = new JScrollPane(ProduktuParadisanaP);
+				Tabula.removeAll();
+				Tabula.add(scroll);
+				Tabula.revalidate();
+				Tabula.repaint();
+				
+			}
+		});
 		
 		
 		
+		
+		JButton atpakalS = new JButton("Uz galveno lapu");
+		atpakalS.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
+		paradit.add(atpakalS);
 		
 		/*Funkcijas, kas ļauj pārslēgties uz citu paneli*/
 		pievienot1.addActionListener(e -> cardLayout.show(cardPanel, "Pievienot"));
