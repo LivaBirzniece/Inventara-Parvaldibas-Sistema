@@ -99,26 +99,45 @@ public class IPS implements ActionListener{
 		
 
 		/*pogas nonemsanas panelim*/
-		JButton nonemtProduktu = new JButton("Noņemt produktu");
+		JButton nonemtProduktu = new JButton("Noņemt produktu/s");
 		nonemt.add(nonemtProduktu);
 		
+		/*Sis ir tests, butu jamaina iespejams ka sis notiek*/
+		/* Nonemsanas funkcija */
+		JButton ParaditProduktusN = new JButton("Parādīt visus produktus");
+		nonemt.add(ParaditProduktusN);
+		JPanel TabulaN = new JPanel();
+		nonemt.add(TabulaN);
 		
-		JCheckBox check = new JCheckBox();
+		ParaditProduktusN.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JCheckBox check = new JCheckBox();
 		
-		String[] columnNames = {"Nosaukums", "Skaits"};
+				String[] columnNames = {"Izvēlēties","Nosaukums", "Skaits"};
+				
+			  
+			    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][3];
+			    int i = 0;
+			    for(String key: ProduktuSaraksts.keySet()) {
+			    	DatiHM[i][0] = false;
+			    	DatiHM[i][1] = key;
+			    	DatiHM[i][2] = ProduktuSaraksts.get(key);
+			    	i++;
+			    }
+				
+				
+				JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
+				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
+				TabulaN.removeAll();
+				TabulaN.add(scrollN);
+				TabulaN.revalidate();
+				TabulaN.repaint();		
+			}
+			
+		});
 		
-	  
-	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
-	    int i = 0;
-	    for(String key: ProduktuSaraksts.keySet()) {
-	    	DatiHM[i][0] = key;
-	    	DatiHM[i][1] = ProduktuSaraksts.get(key);
-	    	i++;
-	    }
-		
-		
-		JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
-		nonemt.add(ProduktuParadisana);
 		JButton atpakalN = new JButton("Uz galveno lapu");
 		atpakalN.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
 		nonemt.add(atpakalN);
