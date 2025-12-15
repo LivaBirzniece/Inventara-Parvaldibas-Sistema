@@ -11,26 +11,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
-
-
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-
-import javax.swing.border.AbstractBorder;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
@@ -287,11 +280,30 @@ public class IPS implements ActionListener{
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
-        JButton ParaditProduktus = createButton("Izveidot teksta failu","list.png");
-		forma.add(ParaditProduktus);
+        JButton IzveidotTekstu = createButton("Izveidot teksta failu","list.png");
+		forma.add(IzveidotTekstu);
 		
-		
-		
+		IzveidotTekstu.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			
+				try {
+					File fails = new File("Saraksts.txt");
+					if(fails.createNewFile()) {
+					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apsitprināts",JOptionPane.INFORMATION_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(null,"Fails jau eksistē","Brīdinājums",JOptionPane.WARNING_MESSAGE);
+				}
+			
+				}catch (IOException e) {
+			JOptionPane.showMessageDialog(null,"Kļūda","Error",JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			
+		});
+	
 		
 		teksts.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		teksts.add(forma, BorderLayout.CENTER);
