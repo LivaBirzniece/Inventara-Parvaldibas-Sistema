@@ -9,17 +9,20 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
+
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
@@ -28,13 +31,23 @@ import javax.swing.border.AbstractBorder;
 
 public class IPS implements ActionListener{
 	private JFrame frame;
+	private JPanel main;
+	private JPanel pievienot;
+	private JPanel nonemt;
+	private JPanel paradit;
+	private JPanel teksts;
+	private CardLayout cardLayout;
+	private JPanel cardPanel;
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
 	private Color bg = new Color(30, 30, 30);
 	private Color textColor = new Color(230, 230, 230);
+    private Color panel = new Color(45, 45, 45);
+	private Color btnNormal = new Color(60, 60, 60);
+	private Color btnHover = new Color(90, 90, 90);
 	
 	public IPS() {
 		
-     	JTextArea tekstsIzdrukat = new JTextArea(16,16);
+     	
 		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,22 +64,18 @@ public class IPS implements ActionListener{
         
         
         
-		CardLayout cardLayout = new CardLayout();
-		JPanel cardPanel = new JPanel(cardLayout);
+		cardLayout = new CardLayout();
+		cardPanel = new JPanel(cardLayout);
 		
 		
 		
-		JPanel main = new JPanel(new GridLayout(0,1));
-		JPanel pievienot = new JPanel();
-		JPanel nonemt = new JPanel();
-		JPanel paradit = new JPanel();
-		JPanel teksts = new JPanel();
+		main = new JPanel(new GridLayout(0,1));
+		pievienot = new JPanel();
+		nonemt = new JPanel();
+		paradit = new JPanel();
+		teksts = new JPanel();
 		
-		cardPanel.add(main,"Galvenā lapa");
-		cardPanel.add(pievienot,"Pievienot");
-		cardPanel.add(nonemt,"Noņemt");
-		cardPanel.add(paradit,"Parādīt");
-		cardPanel.add(teksts,"Faila izveide");
+		
 		
 		
 		main.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
@@ -76,32 +85,66 @@ public class IPS implements ActionListener{
 		
 		frame.setTitle("Inventāra Pārvaldibas Sistēma");
 		
-		/*pogas galvenajam ekranam*/
-		JButton pievienot1 = new JButton("Pievienot produktu");
-		JButton nonemt2 = new JButton("Noņemt produktu");
-		JButton paradit3 = new JButton("Parādīt visus produktus");
-		JButton teksts4 = new JButton("Pārtaisīt produktu sarakstu teksta failā");
-		
-		main.add(pievienot1);
-		main.add(nonemt2);
-		main.add(paradit3);
-		main.add(teksts4);
-		
-		/*Poga, kas ļauj iet atpakal uz galveno lapu*/
 		
 		
 		
-		/*pogas pievienosanas panelim*/
+		Main();
+		Add();
+		Remove();
+//		Show();
+//		Text();
 		
-		JButton pievienotProduktu = new JButton("Pievienot jaunu produktu");
-		pievienot.add(pievienotProduktu);
+		cardPanel.add(main,"Galvenā lapa");
+		cardPanel.add(pievienot,"Pievienot");
+		cardPanel.add(nonemt,"Noņemt");
+		cardPanel.add(paradit,"Parādīt");
+		cardPanel.add(teksts,"Faila izveide");
+	}
+		
+	// - GALVENA LAPA
+	private void  Main() {
+		main  = new JPanel(new GridLayout(4,1,16,16));
+		main.setBackground(panel);
+        main.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        
+        JButton addBtn = createButton("Pievienot produktu","add.png");
+		JButton removeBtn = createButton("Noņemt produktu","remove.png");
+		JButton listBtn = createButton("Parādīt visus produktus","list.png");
+		JButton exportBtn = createButton("Pārtaisīt produktu sarakstu teksta failā","file.png");
+		
+		
+		addBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Pievienot"));
+		removeBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Noņemt"));
+		listBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Parādīt"));
+		exportBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Faila izveide"));
+		
+		
+		
+		main.add(addBtn);
+		main.add(removeBtn);
+		main.add(listBtn);
+		main.add(exportBtn);
+		
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		
+	}
+		
+	// - PIEVIENOSANAS LAPA
+	private void Add() {
+		pievienot = new JPanel(new BorderLayout());
+        pievienot.setBackground(panel);
+        
+        
+        
+        JButton pievienotProduktu = new JButton("Pievienot jaunu produktu");
+	    pievienot.add(pievienotProduktu);
 		JTextField produkts = new JTextField(16);
-		pievienot.add(produkts);
-		JTextField skaits = new JTextField(16);
+	 	pievienot.add(produkts);
+	    JTextField skaits = new JTextField(16);
 		pievienot.add(skaits);
-		JButton atpakalP = new JButton("Uz galveno lapu");
-		atpakalP.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
-		pievienot.add(atpakalP);
+		
+		
 		
 		pievienotProduktu.addActionListener(new ActionListener() {
 
@@ -110,17 +153,21 @@ public class IPS implements ActionListener{
 				String ProduktaNosaukums = produkts.getText().trim();
 				String ProduktaSkaits = skaits.getText().trim();
 				ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
-				produkts.setText("");
+			    produkts.setText("");
 				skaits.setText("");
 				
 			}
 			
 		
 		});
+		createBackButton(); 
+	}
 		
-		
-		
-
+	// - NONEMSANAS LAPA
+	private void Remove() {
+		nonemt = new JPanel(new BorderLayout());
+        nonemt.setBackground(panel);
+        
 		/*pogas nonemsanas panelim*/
 		JButton nonemtProduktu = new JButton("Noņemt produktu/s");
 		nonemt.add(nonemtProduktu);
@@ -136,8 +183,8 @@ public class IPS implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JCheckBox check = new JCheckBox();
-		
+//				JCheckBox check = new JCheckBox();
+
 				String[] columnNames = {"Izvēlēties","Nosaukums", "Skaits"};
 				
 			  
@@ -159,60 +206,57 @@ public class IPS implements ActionListener{
 				TabulaN.repaint();		
 			}
 			
-		});
+			});
 		
-		JButton atpakalN = new JButton("Uz galveno lapu");
-		atpakalN.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
-		nonemt.add(atpakalN);
 		
-		/*pogas skatisanas paneli*/
-		
-		JButton ParaditProduktu = new JButton("Parādīt visus produktus");
-		paradit.add(ParaditProduktu);
-		JPanel Tabula = new JPanel();
-		paradit.add(Tabula);
-		
-		ParaditProduktu.addActionListener(new ActionListener() {
+        
+	}
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String[] columnNamesP = {"Nosaukums", "Skaits"};
+	// - PARADISANAS LAPA
+	
 		
-		  
-				Object[][] DatiHMP = new Object[ProduktuSaraksts.size()][2];
-				int i = 0;
-				for(String key: ProduktuSaraksts.keySet()) {
-					DatiHMP[i][0] = key;
-					DatiHMP[i][1] = ProduktuSaraksts.get(key);
-					i++;
-				}
-				JTable ProduktuParadisanaP = new JTable(DatiHMP, columnNamesP);
-				JScrollPane scroll = new JScrollPane(ProduktuParadisanaP);
-				Tabula.removeAll();
-				Tabula.add(scroll);
-				Tabula.revalidate();
-				Tabula.repaint();
-				
-			}
-		});
-		
-		
-		
-		
-		JButton atpakalS = new JButton("Uz galveno lapu");
-		atpakalS.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
-		paradit.add(atpakalS);
-		
-		/*Funkcijas, kas ļauj pārslēgties uz citu paneli*/
-		pievienot1.addActionListener(e -> cardLayout.show(cardPanel, "Pievienot"));
-		nonemt2.addActionListener(e -> cardLayout.show(cardPanel, "Noņemt"));
-		paradit3.addActionListener(e -> cardLayout.show(cardPanel, "Parādīt"));
-		teksts4.addActionListener(e -> cardLayout.show(cardPanel, "Faila izveide"));
-		
-		
-		
-		frame.pack();
-		frame.setVisible(true);
+
+
+	private JButton createButton(String text, String iconFile) {
+		JButton btn = new JButton(text);
+
+        try { btn.setIcon(new ImageIcon(iconFile)); } catch (Exception ignore) {}
+
+        btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setIconTextGap(15);
+
+        btn.setFocusPainted(false);
+        btn.setForeground(textColor);
+        btn.setBackground(btnNormal);
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        btn.setBorder(new RoundedBorder(12));
+        btn.setContentAreaFilled(false);
+
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) { btn.setBackground(btnHover); btn.repaint(); }
+            public void mouseExited(MouseEvent e) { btn.setBackground(btnNormal); btn.repaint(); }
+        });
+
+        return btn;
+
+	}
+	
+	private JButton createBackButton() {
+		//atpkal
+		JButton back = new JButton ("<- Atpakaļ");
+		back.setFocusPainted(false);
+        back.setBackground(btnNormal);
+        back.setForeground(textColor);
+        back.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        back.setBorder(new RoundedBorder(12));
+        back.setContentAreaFilled(false);
+        back.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) { back.setBackground(btnHover); back.repaint(); }
+            public void mouseExited(MouseEvent e) { back.setBackground(btnNormal); back.repaint(); }
+        });
+         // aizsuta mus atpakal uz main menu , pirmais kods augsa
+        back.addActionListener(e -> Main());
+        return back;
 	}
 	class RoundedBorder extends AbstractBorder {
         private int radius;
