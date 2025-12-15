@@ -46,6 +46,7 @@ public class IPS implements ActionListener{
 	private JPanel teksts;
 	private CardLayout cardLayout;
 	private JPanel cardPanel;
+	private JButton paraditProduktus;
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
 	private Color bg = new Color(30, 30, 30);
 	private Color textColor = new Color(230, 230, 230);
@@ -99,8 +100,8 @@ public class IPS implements ActionListener{
 		Main();
 		Add();
 		Remove();
-//		Show();
-//		Text();
+		Show();
+		Text();
 		
 		cardPanel.add(main,"Galvenā lapa");
 		cardPanel.add(pievienot,"Pievienot");
@@ -194,12 +195,12 @@ public class IPS implements ActionListener{
 		forma.add(nonemtProduktu);
 		
 		
-		JButton ParaditProduktusN = new JButton("Parādīt visus produktus");
-		forma.add(ParaditProduktusN);
+		JButton ParaditProduktus = new JButton("Parādīt visus produktus");
+		forma.add(ParaditProduktus);
 		JPanel TabulaN = new JPanel();
 		forma.add(TabulaN);
 		
-		ParaditProduktusN.addActionListener(new ActionListener() {
+		ParaditProduktus.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -232,18 +233,79 @@ public class IPS implements ActionListener{
 	}
 
 	// - PARADISANAS LAPA
-	
+	private void Show() {
+		paradit = new JPanel(new BorderLayout());
+		paradit.setBackground(panel);
 		
+		JPanel forma = new JPanel(new GridLayout(0,1,10,10));
+        forma.setBackground(panel);
+        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        
+        JButton ParaditProduktus = new JButton("Parādīt visus produktus");
+		forma.add(ParaditProduktus);
+		
+		JPanel Tabula = new JPanel();
+		forma.add(Tabula);
+		
+		ParaditProduktus.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+//				JCheckBox check = new JCheckBox();
+
+				String[] columnNames = {"Nosaukums", "Skaits"};
+				
+			  
+			    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
+			    int i = 0;
+			    for(String key: ProduktuSaraksts.keySet()) {
+			    	
+			    	DatiHM[i][0] = key;
+			    	DatiHM[i][1] = ProduktuSaraksts.get(key);
+			    	i++;
+			    }
+				
+				
+				JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
+				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
+				Tabula.removeAll();
+				Tabula.add(scrollN);
+				Tabula.revalidate();
+				Tabula.repaint();		
+			}
+		});
+		paradit.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
+		paradit.add(forma, BorderLayout.CENTER);
+	}
+		
+	// - TEKSTA FAILA IZVEIDE
+	private void Text() {
+		teksts = new JPanel(new BorderLayout());
+		teksts.setBackground(panel);
+		
+		JPanel forma = new JPanel(new GridLayout(0,1,10,10));
+        forma.setBackground(panel);
+        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        
+        JButton ParaditProduktus = createButton("Izveidot teksta failu","list.png");
+		forma.add(ParaditProduktus);
+		
+		
+		
+		
+		teksts.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
+		teksts.add(forma, BorderLayout.CENTER);
+	}
+	
 
 	private JButton createButton(String text, String iconFile) {
 		JButton btn = new JButton(text);
 
         try { btn.setIcon(new ImageIcon(iconFile)); } catch (Exception ignore) {}
 
-        btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setIconTextGap(15);
-
+        
         btn.setFocusPainted(false);
         btn.setForeground(textColor);
         btn.setBackground(btnNormal);
@@ -300,3 +362,5 @@ public class IPS implements ActionListener{
 		
 	}
 }
+
+// Vajag salabot izmerus
