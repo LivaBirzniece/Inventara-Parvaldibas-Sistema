@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -27,6 +27,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
+import javax.swing.table.JTableHeader;
 
 
 
@@ -39,7 +40,6 @@ public class IPS implements ActionListener{
 	private JPanel teksts;
 	private CardLayout cardLayout;
 	private JPanel cardPanel;
-	private JButton paraditProduktus;
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
 	private Color bg = new Color(30, 30, 30);
 	private Color textColor = new Color(230, 230, 230);
@@ -109,7 +109,7 @@ public class IPS implements ActionListener{
 		main.setBackground(panel);
         main.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
-        JButton addBtn = createButton("Pievienot produktu","add.png");
+        JButton addBtn = createButton("Pievienot produktu","Bildes/add.png");
 		JButton removeBtn = createButton("Noņemt produktu","remove.png");
 		JButton listBtn = createButton("Parādīt visus produktus","list.png");
 		JButton exportBtn = createButton("Pārtaisīt produktu sarakstu teksta failā","file.png");
@@ -148,6 +148,7 @@ public class IPS implements ActionListener{
         JButton pievienotProduktu = createButton("Pievienot jaunu produktu","add.png");
 	    forma.add(pievienotProduktu);
 		JTextField produkts = new JTextField(16);
+		
 		produkts.setBackground(btnNormal);
 		produkts.setForeground(textColor);
 	 	forma.add(produkts);
@@ -190,8 +191,8 @@ public class IPS implements ActionListener{
 		
 		JButton ParaditProduktus = new JButton("Parādīt visus produktus");
 		forma.add(ParaditProduktus);
-		JPanel TabulaN = new JPanel();
-		forma.add(TabulaN);
+		JPanel Tabula = new JPanel();
+		forma.add(Tabula);
 		
 		ParaditProduktus.addActionListener(new ActionListener() {
 
@@ -214,10 +215,18 @@ public class IPS implements ActionListener{
 				
 				JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
 				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
-				TabulaN.removeAll();
-				TabulaN.add(scrollN);
-				TabulaN.revalidate();
-				TabulaN.repaint();		
+				Tabula.removeAll();
+				Tabula.add(scrollN);
+				Tabula.revalidate();
+				Tabula.repaint();
+				Tabula.setBackground(panel);
+				ProduktuParadisana.setGridColor(panel);
+				
+				JTableHeader galvene = ProduktuParadisana.getTableHeader();
+				galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+				galvene.setBackground(panel);
+				galvene.setForeground(textColor);
+				
 			}
 			
 			});
@@ -261,8 +270,10 @@ public class IPS implements ActionListener{
 				
 				JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
 				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
+				ProduktuParadisana.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 				Tabula.removeAll();
-				Tabula.add(scrollN);
+				ProduktuParadisana.add(scrollN);
+				Tabula.setBackground(panel);
 				Tabula.revalidate();
 				Tabula.repaint();		
 			}
@@ -289,19 +300,27 @@ public class IPS implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				
 			
+//				try {
+//					File fails = new File("Saraksts.txt");
+//					if(fails.createNewFile()) {
+//					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apsitprināts",JOptionPane.INFORMATION_MESSAGE);
+//				}else {
+//					JOptionPane.showMessageDialog(null,"Fails jau eksistē","Brīdinājums",JOptionPane.WARNING_MESSAGE);
+//				}
+//			
+//				}catch (IOException ex) {
+//			JOptionPane.showMessageDialog(null,"Kļūda","Error",JOptionPane.ERROR_MESSAGE);
+//				}
+//			}
 				try {
-					File fails = new File("Saraksts.txt");
-					if(fails.createNewFile()) {
+					FileWriter fl = new FileWriter("Saraksts.txt");
+					fl.write(ProduktuSaraksts.toString());
+					fl.close();
 					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apsitprināts",JOptionPane.INFORMATION_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(null,"Fails jau eksistē","Brīdinājums",JOptionPane.WARNING_MESSAGE);
+				}catch (IOException ex) {
+					JOptionPane.showMessageDialog(null,"Kļūda","Error",JOptionPane.ERROR_MESSAGE);
 				}
-			
-				}catch (IOException e) {
-			JOptionPane.showMessageDialog(null,"Kļūda","Error",JOptionPane.ERROR_MESSAGE);
-				}
-			}
-			
+			}	
 		});
 	
 		
