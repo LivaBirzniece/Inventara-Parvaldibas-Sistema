@@ -135,14 +135,24 @@ public class IPS implements ActionListener{
 		pievienot = new JPanel(new BorderLayout());
         pievienot.setBackground(panel);
         
+        pievienot.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
         
         
-        JButton pievienotProduktu = new JButton("Pievienot jaunu produktu");
-	    pievienot.add(pievienotProduktu);
+        JPanel forma = new JPanel(new GridLayout(0,1,10,10));
+        forma.setBackground(panel);
+        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        
+        
+        JButton pievienotProduktu = createButton("Pievienot jaunu produktu","add.png");
+	    forma.add(pievienotProduktu);
 		JTextField produkts = new JTextField(16);
-	 	pievienot.add(produkts);
+		produkts.setBackground(btnNormal);
+		produkts.setForeground(textColor);
+	 	forma.add(produkts);
 	    JTextField skaits = new JTextField(16);
-		pievienot.add(skaits);
+	    skaits.setBackground(btnNormal);
+	    skaits.setForeground(textColor);
+		forma.add(skaits);
 		
 		
 		
@@ -160,7 +170,7 @@ public class IPS implements ActionListener{
 			
 		
 		});
-		createBackButton(); 
+		pievienot.add(forma, BorderLayout.CENTER);
 	}
 		
 	// - NONEMSANAS LAPA
@@ -168,16 +178,18 @@ public class IPS implements ActionListener{
 		nonemt = new JPanel(new BorderLayout());
         nonemt.setBackground(panel);
         
-		/*pogas nonemsanas panelim*/
-		JButton nonemtProduktu = new JButton("Noņemt produktu/s");
-		nonemt.add(nonemtProduktu);
+        JPanel forma = new JPanel(new GridLayout(0,1,10,10));
+        forma.setBackground(panel);
+        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        
+        JButton nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
+		forma.add(nonemtProduktu);
 		
-		/*Sis ir tests, butu jamaina iespejams ka sis notiek*/
-		/* Nonemsanas funkcija */
+		
 		JButton ParaditProduktusN = new JButton("Parādīt visus produktus");
-		nonemt.add(ParaditProduktusN);
+		forma.add(ParaditProduktusN);
 		JPanel TabulaN = new JPanel();
-		nonemt.add(TabulaN);
+		forma.add(TabulaN);
 		
 		ParaditProduktusN.addActionListener(new ActionListener() {
 
@@ -207,9 +219,8 @@ public class IPS implements ActionListener{
 			}
 			
 			});
-		
-		
-        
+		nonemt.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
+		nonemt.add(forma, BorderLayout.CENTER);
 	}
 
 	// - PARADISANAS LAPA
@@ -241,7 +252,7 @@ public class IPS implements ActionListener{
 
 	}
 	
-	private JButton createBackButton() {
+	private JButton createBackButton(String string) {
 		//atpkal
 		JButton back = new JButton ("<- Atpakaļ");
 		back.setFocusPainted(false);
@@ -255,7 +266,7 @@ public class IPS implements ActionListener{
             public void mouseExited(MouseEvent e) { back.setBackground(btnNormal); back.repaint(); }
         });
          // aizsuta mus atpakal uz main menu , pirmais kods augsa
-        back.addActionListener(e -> Main());
+        back.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
         return back;
 	}
 	class RoundedBorder extends AbstractBorder {
