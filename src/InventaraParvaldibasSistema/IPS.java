@@ -2,6 +2,10 @@ package InventaraParvaldibasSistema;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,23 +15,42 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.AbstractBorder;
 
 
 
 public class IPS implements ActionListener{
 	private JFrame frame;
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
+	private Color bg = new Color(30, 30, 30);
+	private Color textColor = new Color(230, 230, 230);
 	
 	public IPS() {
 		
      	JTextArea tekstsIzdrukat = new JTextArea(16,16);
 		
 		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(800, 600);
+		frame.getContentPane().setBackground(bg);
+        frame.setLayout(new BorderLayout());
+        
+        JLabel title = new JLabel("Inventāra Pārvaldības Sistēma", SwingConstants.CENTER);
+        title.setForeground(textColor);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        frame.add(title, BorderLayout.NORTH);
+        
+        
+        
+        
 		CardLayout cardLayout = new CardLayout();
 		JPanel cardPanel = new JPanel(cardLayout);
 		
@@ -50,7 +73,7 @@ public class IPS implements ActionListener{
 		
 		
 		frame.add(cardPanel, BorderLayout.CENTER);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		frame.setTitle("Inventāra Pārvaldibas Sistēma");
 		
 		/*pogas galvenajam ekranam*/
@@ -191,7 +214,15 @@ public class IPS implements ActionListener{
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+	class RoundedBorder extends AbstractBorder {
+        private int radius;
+        RoundedBorder(int r) { radius = r; }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
+            g.setColor(new Color(120, 120, 120));
+            g.drawRoundRect(x, y, w - 1, h - 1, radius, radius);
+        }
+    }
 	
 	public static void main(String[] args) {
 		new IPS();
