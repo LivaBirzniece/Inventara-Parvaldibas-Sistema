@@ -40,6 +40,9 @@ public class IPS implements ActionListener{
 	private JPanel teksts;
 	private CardLayout cardLayout;
 	private JPanel cardPanel;
+	private JTable ProduktuParadisana;
+	private JButton nonemtProduktu;
+	private JPanel Tabula;
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
 	private Color bg = new Color(30, 30, 30);
 	private Color textColor = new Color(230, 230, 230);
@@ -185,20 +188,45 @@ public class IPS implements ActionListener{
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
-        JButton nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
+        nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
 		forma.add(nonemtProduktu);
+		
+		nonemtProduktu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (ProduktuParadisana == null) {
+			        JOptionPane.showMessageDialog(forma, "Vispirms nospied: Parādīt visus produktus!");
+			        return;
+			    }
+				if (ProduktuParadisana.isEditing()) {
+				    ProduktuParadisana.getCellEditor().stopCellEditing();
+				}
+		            
+				for (int row = ProduktuParadisana.getRowCount() - 1; row >= 0; row--) {
+		            Object val = ProduktuParadisana.getValueAt(row, 0);
+
+		            if (Boolean.TRUE.equals(val)) {
+		                String nosaukums = String.valueOf(ProduktuParadisana.getValueAt(row, 1));
+		                ProduktuSaraksts.remove(nosaukums);
+		            }
+		        }
+			}
+			
+			
+		});
 		
 		
 		JButton ParaditProduktus = new JButton("Parādīt visus produktus");
 		forma.add(ParaditProduktus);
-		JPanel Tabula = new JPanel();
+		Tabula = new JPanel();
 		forma.add(Tabula);
 		
 		ParaditProduktus.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				JCheckBox check = new JCheckBox();
+			
 
 				String[] columnNames = {"Izvēlēties","Nosaukums", "Skaits"};
 				
@@ -206,14 +234,21 @@ public class IPS implements ActionListener{
 			    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][3];
 			    int i = 0;
 			    for(String key: ProduktuSaraksts.keySet()) {
-			    	DatiHM[i][0] = false;
+			    	DatiHM[i][0] = Boolean.FALSE;
 			    	DatiHM[i][1] = key;
 			    	DatiHM[i][2] = ProduktuSaraksts.get(key);
 			    	i++;
 			    }
+			    
 				
 				
-				JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
+				ProduktuParadisana = new JTable(DatiHM, columnNames) {
+					@Override
+				    public Class<?> getColumnClass(int column) {
+				        return column == 0 ? Boolean.class : Object.class;
+				    }
+				};
+				
 				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
 				Tabula.removeAll();
 				Tabula.add(scrollN);
@@ -253,15 +288,12 @@ public class IPS implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				JCheckBox check = new JCheckBox();
-
 				String[] columnNames = {"Nosaukums", "Skaits"};
 				
 			  
 			    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
 			    int i = 0;
 			    for(String key: ProduktuSaraksts.keySet()) {
-			    	
 			    	DatiHM[i][0] = key;
 			    	DatiHM[i][1] = ProduktuSaraksts.get(key);
 			    	i++;
@@ -270,12 +302,17 @@ public class IPS implements ActionListener{
 				
 				JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
 				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
-				ProduktuParadisana.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 				Tabula.removeAll();
-				ProduktuParadisana.add(scrollN);
-				Tabula.setBackground(panel);
+				Tabula.add(scrollN);
 				Tabula.revalidate();
-				Tabula.repaint();		
+				Tabula.repaint();
+				Tabula.setBackground(panel);
+				ProduktuParadisana.setGridColor(panel);
+				
+				JTableHeader galvene = ProduktuParadisana.getTableHeader();
+				galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+				galvene.setBackground(panel);
+				galvene.setForeground(textColor);		
 			}
 		});
 		paradit.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
