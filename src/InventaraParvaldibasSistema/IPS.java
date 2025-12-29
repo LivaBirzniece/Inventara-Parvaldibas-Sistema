@@ -44,6 +44,7 @@ public class IPS implements ActionListener{
 	private JButton nonemtProduktu;
 	private JPanel Tabula;
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
+	private FileWriter fl;
 	private Color bg = new Color(30, 30, 30);
 	private Color textColor = new Color(230, 230, 230);
     private Color panel = new Color(45, 45, 45);
@@ -350,8 +351,8 @@ public class IPS implements ActionListener{
 //				}
 //			}
 				try {
-					FileWriter fl = new FileWriter("Saraksts.txt");
-					fl.write(ProduktuSaraksts.toString());
+					fl = new FileWriter("Saraksts.txt");
+					fl.write(TextString());
 					fl.close();
 					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apsitprināts",JOptionPane.INFORMATION_MESSAGE);
 				}catch (IOException ex) {
@@ -364,7 +365,14 @@ public class IPS implements ActionListener{
 		teksts.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		teksts.add(forma, BorderLayout.CENTER);
 	}
-	
+	private int TextString() throws IOException {
+		for(String nosaukums: ProduktuSaraksts.keySet()) {
+			String key = nosaukums.toString();
+			String value = ProduktuSaraksts.get(nosaukums).toString();
+			fl.write(key+" "+value);
+		}
+		return 0;
+	}
 
 	private JButton createButton(String text, String iconFile) {
 		JButton btn = new JButton(text);
