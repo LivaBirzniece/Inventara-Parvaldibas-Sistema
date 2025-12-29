@@ -27,6 +27,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 
@@ -189,35 +190,7 @@ public class IPS implements ActionListener{
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
-        nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
-		forma.add(nonemtProduktu);
-		
-		nonemtProduktu.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (ProduktuParadisana == null) {
-			        JOptionPane.showMessageDialog(forma, "Vispirms nospied: Parādīt visus produktus!");
-			        return;
-			    }
-				if (ProduktuParadisana.isEditing()) {
-				    ProduktuParadisana.getCellEditor().stopCellEditing();
-				}
-		            
-				for (int row = ProduktuParadisana.getRowCount() - 1; row >= 0; row--) {
-		            Object val = ProduktuParadisana.getValueAt(row, 0);
-
-		            if (Boolean.TRUE.equals(val)) {
-		                String nosaukums = String.valueOf(ProduktuParadisana.getValueAt(row, 1));
-		                ProduktuSaraksts.remove(nosaukums);
-		            }
-		        }
-			}
-			
-			
-		});
-		
-		
+ 
 		JButton ParaditProduktus = new JButton("Parādīt visus produktus");
 		forma.add(ParaditProduktus);
 		Tabula = new JPanel();
@@ -243,12 +216,12 @@ public class IPS implements ActionListener{
 			    
 				
 				
-				ProduktuParadisana = new JTable(DatiHM, columnNames) {
-					@Override
-				    public Class<?> getColumnClass(int column) {
-				        return column == 0 ? Boolean.class : Object.class;
-				    }
-				};
+			    DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames);
+			    ProduktuParadisana = new JTable(model);
+			    ProduktuParadisana.getColumnModel().getColumn(0)
+			    .setCellRenderer(ProduktuParadisana.getDefaultRenderer(Boolean.class));
+			    ProduktuParadisana.getColumnModel().getColumn(0)
+			    .setCellEditor(ProduktuParadisana.getDefaultEditor(Boolean.class));
 				
 				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
 				Tabula.removeAll();
@@ -265,6 +238,37 @@ public class IPS implements ActionListener{
 				
 			}
 			
+			});
+		 nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
+			forma.add(nonemtProduktu);
+			
+			nonemtProduktu.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (ProduktuParadisana == null) {
+				        JOptionPane.showMessageDialog(forma, "Vispirms nospied: Parādīt visus produktus!");
+				        return;
+				    }
+					if (ProduktuParadisana.isEditing()) {
+					    ProduktuParadisana.getCellEditor().stopCellEditing();
+					}
+					DefaultTableModel model = (DefaultTableModel) ProduktuParadisana.getModel();
+			            
+
+			        for (int viewRow = ProduktuParadisana.getRowCount() - 1; viewRow >= 0; viewRow--) {
+			            Object checked = ProduktuParadisana.getValueAt(viewRow, 0);
+
+			            if (Boolean.TRUE.equals(checked)) {
+			                int modelRow = ProduktuParadisana.convertRowIndexToModel(viewRow);
+
+			                String key = String.valueOf(model.getValueAt(modelRow, 1)); 
+			                ProduktuSaraksts.remove(key);  
+			                model.removeRow(modelRow);     
+			            	}
+			        }
+				}
+				
 			});
 		nonemt.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		nonemt.add(forma, BorderLayout.CENTER);
