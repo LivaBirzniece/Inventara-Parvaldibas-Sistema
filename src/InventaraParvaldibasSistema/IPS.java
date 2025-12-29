@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 
 
@@ -68,12 +69,9 @@ public class IPS implements ActionListener{
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         frame.add(title, BorderLayout.NORTH);
         
-        
-        
-        
+   
 		cardLayout = new CardLayout();
 		cardPanel = new JPanel(cardLayout);
-		
 		
 		
 		main = new JPanel(new GridLayout(0,1));
@@ -82,18 +80,9 @@ public class IPS implements ActionListener{
 		paradit = new JPanel();
 		teksts = new JPanel();
 		
-		
-		
-		
 		main.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
-		
-		
 		frame.add(cardPanel, BorderLayout.CENTER);
-		
 		frame.setTitle("Inventāra Pārvaldibas Sistēma");
-		
-		
-		
 		
 		Main();
 		Add();
@@ -124,8 +113,6 @@ public class IPS implements ActionListener{
 		removeBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Noņemt"));
 		listBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Parādīt"));
 		exportBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Faila izveide"));
-		
-		
 		
 		main.add(addBtn);
 		main.add(removeBtn);
@@ -162,8 +149,6 @@ public class IPS implements ActionListener{
 	    skaits.setForeground(textColor);
 		forma.add(skaits);
 		
-		
-		
 		pievienotProduktu.addActionListener(new ActionListener() {
 
 			@Override
@@ -173,10 +158,7 @@ public class IPS implements ActionListener{
 				ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
 			    produkts.setText("");
 				skaits.setText("");
-				
 			}
-			
-		
 		});
 		pievienot.add(forma, BorderLayout.CENTER);
 	}
@@ -305,8 +287,15 @@ public class IPS implements ActionListener{
 			    }
 				
 				
-				JTable ProduktuParadisana = new JTable(DatiHM, columnNames);
+				ProduktuParadisana = new JTable(DatiHM, columnNames);
 				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
+				
+				ProduktuParadisana.setAutoCreateRowSorter(true);
+				TableRowSorter<?> Sakartot = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
+				Sakartot.toggleSortOrder(0);
+			
+				
+				
 				Tabula.removeAll();
 				Tabula.add(scrollN);
 				Tabula.revalidate();
@@ -320,6 +309,7 @@ public class IPS implements ActionListener{
 				galvene.setForeground(textColor);		
 			}
 		});
+		
 		paradit.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		paradit.add(forma, BorderLayout.CENTER);
 	}
@@ -341,19 +331,6 @@ public class IPS implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-			
-//				try {
-//					File fails = new File("Saraksts.txt");
-//					if(fails.createNewFile()) {
-//					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apsitprināts",JOptionPane.INFORMATION_MESSAGE);
-//				}else {
-//					JOptionPane.showMessageDialog(null,"Fails jau eksistē","Brīdinājums",JOptionPane.WARNING_MESSAGE);
-//				}
-//			
-//				}catch (IOException ex) {
-//			JOptionPane.showMessageDialog(null,"Kļūda","Error",JOptionPane.ERROR_MESSAGE);
-//				}
-//			}
 				try {
 					fl = new FileWriter("Saraksts.txt");
 					fl.write(TextString());
@@ -443,4 +420,4 @@ public class IPS implements ActionListener{
 	}
 }
 
-// Vajag salabot izmerus
+
