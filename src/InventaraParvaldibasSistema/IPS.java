@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.EventObject;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -200,6 +201,8 @@ public class IPS implements ActionListener{
 				
 			    DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames);
 			    ProduktuParadisana = new JTable(model);
+			    
+			    
 			    ProduktuParadisana.getColumnModel().getColumn(0)
 			    .setCellRenderer(ProduktuParadisana.getDefaultRenderer(Boolean.class));
 			    ProduktuParadisana.getColumnModel().getColumn(0)
@@ -287,7 +290,11 @@ public class IPS implements ActionListener{
 			    }
 				
 				
-				ProduktuParadisana = new JTable(DatiHM, columnNames);
+				ProduktuParadisana = new JTable(DatiHM, columnNames) {
+					public boolean editCellAt(int row, int column, EventObject e) {
+			    		return false;
+			    	}
+				};
 				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
 				
 				ProduktuParadisana.setAutoCreateRowSorter(true);
@@ -419,5 +426,5 @@ public class IPS implements ActionListener{
 		
 	}
 }
-
-
+//Janoformē, lai nevar edit taisit nonemsanas lapa, bet var edit taisit checkbox
+// Noformējums jāmaina;
