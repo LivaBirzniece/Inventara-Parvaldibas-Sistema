@@ -156,9 +156,20 @@ public class IPS implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				String ProduktaNosaukums = produkts.getText().trim();
 				String ProduktaSkaits = skaits.getText().trim();
+				if(ProduktaNosaukums.isEmpty() || ProduktaSkaits.isEmpty() ) {
+					JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet tekstu!");
+					return;
+				};
 				ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
-			    produkts.setText("");
-				skaits.setText("");
+				produkts.setText("");
+			    skaits.setText("");
+				
+			    try {
+			    	Integer.parseInt(ProduktaSkaits);
+			    }catch(NumberFormatException x) {
+			    	JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet skaitli!");
+			    	return;
+			    }
 			}
 		});
 		pievienot.add(forma, BorderLayout.CENTER);
