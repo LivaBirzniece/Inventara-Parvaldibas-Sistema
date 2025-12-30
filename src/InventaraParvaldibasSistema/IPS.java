@@ -47,7 +47,7 @@ public class IPS implements ActionListener{
 	private JButton nonemtProduktu;
 	private JPanel NonemtTabulu;
 	private JPanel ParaditTabulu;
-	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
+	private HashMap<String,Integer> ProduktuSaraksts = new HashMap<>();
 	private FileWriter fl;
 	private Color bg = new Color(30, 30, 30);
 	private Color textColor = new Color(230, 230, 230);
@@ -162,21 +162,22 @@ public class IPS implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String ProduktaNosaukums = produkts.getText().trim();
-				String ProduktaSkaits = skaits.getText().trim();
-				if(ProduktaNosaukums.isEmpty() || ProduktaSkaits.isEmpty() ) {
+				String ProduktaSkaitsTeksts = skaits.getText().trim();
+				if(ProduktaNosaukums.isEmpty() || ProduktaSkaitsTeksts.isEmpty() ) {
 					JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet tekstu!");
 					return;
 				};
-				ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
-				produkts.setText("");
-			    skaits.setText("");
 				
+				int ProduktaSkaits;
 			    try {
-			    	Integer.parseInt(ProduktaSkaits);
+			    	ProduktaSkaits = Integer.parseInt(ProduktaSkaitsTeksts);
 			    }catch(NumberFormatException x) {
 			    	JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet skaitli!");
 			    	return;
 			    }
+			    ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
+				produkts.setText("");
+			    skaits.setText("");
 			}
 		});
 		pievienot.add(forma, BorderLayout.CENTER);
@@ -432,5 +433,5 @@ public class IPS implements ActionListener{
 		
 	}
 }
-//Janoformē, lai nevar edit taisit nonemsanas lapa, bet var edit taisit checkbox
+
 // Noformējums jāmaina;
