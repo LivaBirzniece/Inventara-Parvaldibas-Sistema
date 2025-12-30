@@ -56,9 +56,6 @@ public class IPS implements ActionListener{
 	private Color btnHover = new Color(90, 90, 90);
 	
 	public IPS() {
-		
-     	
-		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(800, 600);
@@ -71,10 +68,8 @@ public class IPS implements ActionListener{
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         frame.add(title, BorderLayout.NORTH);
         
-   
 		cardLayout = new CardLayout();
 		cardPanel = new JPanel(cardLayout);
-		
 		
 		main = new JPanel(new GridLayout(0,1));
 		pievienot = new JPanel();
@@ -110,7 +105,6 @@ public class IPS implements ActionListener{
 		JButton listBtn = createButton("Parādīt visus produktus","list.png");
 		JButton exportBtn = createButton("Pārtaisīt produktu sarakstu teksta failā","file.png");
 		
-		
 		addBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Pievienot"));
 		removeBtn.addActionListener(e  -> {
 		cardLayout.show(cardPanel,"Noņemt");
@@ -139,11 +133,9 @@ public class IPS implements ActionListener{
         
         pievienot.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
         
-        
         JPanel forma = new JPanel(new GridLayout(0,1,10,10));
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
-        
         
         JButton pievienotProduktu = createButton("Pievienot jaunu produktu","add.png");
 	    forma.add(pievienotProduktu);
@@ -187,7 +179,6 @@ public class IPS implements ActionListener{
 	private void TabulaParadit() {
     	String[] columnNames = {"Izvēlēties","Nosaukums", "Skaits"};
 		
-	  
 	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][3];
 	    int i = 0;
 	    for(String key: ProduktuSaraksts.keySet()) {
@@ -196,12 +187,9 @@ public class IPS implements ActionListener{
 	    	DatiHM[i][2] = ProduktuSaraksts.get(key);
 	    	i++;
 	    }
-	    
-		
-		
+
 	    DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames);
 	    ProduktuParadisana = new JTable(model);
-	    
 	    
 	    ProduktuParadisana.getColumnModel().getColumn(0)
 	    .setCellRenderer(ProduktuParadisana.getDefaultRenderer(Boolean.class));
@@ -215,6 +203,8 @@ public class IPS implements ActionListener{
 		NonemtTabulu.repaint();
 		NonemtTabulu.setBackground(panel);
 		ProduktuParadisana.setGridColor(panel);
+		scrollN.getViewport().setBackground(Color.LIGHT_GRAY);
+		scrollN.setBackground(Color.LIGHT_GRAY);
 		
 		JTableHeader galvene = ProduktuParadisana.getTableHeader();
 		galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -229,12 +219,10 @@ public class IPS implements ActionListener{
         JPanel forma = new JPanel(new GridLayout(0,1,10,10));
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
-        
-
+       
         NonemtTabulu = new JPanel();
         forma.add(NonemtTabulu);
         
-			
 		 nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
 			forma.add(nonemtProduktu);
 			
@@ -274,7 +262,6 @@ public class IPS implements ActionListener{
 	private void ParaditTabulu() {
 		String[] columnNames = {"Nosaukums", "Skaits"};
 		
-		  
 	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
 	    int i = 0;
 	    for(String key: ProduktuSaraksts.keySet()) {
@@ -282,7 +269,6 @@ public class IPS implements ActionListener{
 	    	DatiHM[i][1] = ProduktuSaraksts.get(key);
 	    	i++;
 	    }
-		
 		
 		ProduktuParadisana = new JTable(DatiHM, columnNames) {
 			public boolean editCellAt(int row, int column, EventObject e) {
@@ -295,8 +281,6 @@ public class IPS implements ActionListener{
 		TableRowSorter<?> Sakartot = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
 		Sakartot.toggleSortOrder(0);
 	
-		
-		
 		ParaditTabulu.removeAll();
 		ParaditTabulu.add(scrollN);
 		ParaditTabulu.revalidate();
@@ -317,12 +301,8 @@ public class IPS implements ActionListener{
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
-        
-		
         ParaditTabulu = new JPanel();
         forma.add(ParaditTabulu);
-		
-		
 		
 		paradit.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		paradit.add(forma, BorderLayout.CENTER);
@@ -349,14 +329,13 @@ public class IPS implements ActionListener{
 					fl = new FileWriter("Saraksts.txt");
 					fl.write(TextString());
 					fl.close();
-					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apsitprināts",JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apstiprināts",JOptionPane.INFORMATION_MESSAGE);
 				}catch (IOException ex) {
 					JOptionPane.showMessageDialog(null,"Kļūda","Error",JOptionPane.ERROR_MESSAGE);
 				}
 			}	
 		});
-	
-		
+
 		teksts.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		teksts.add(forma, BorderLayout.CENTER);
 	}
@@ -369,6 +348,9 @@ public class IPS implements ActionListener{
 		return 0;
 	}
 
+	
+	
+	// DIZAINS
 	private JButton createButton(String text, String iconFile) {
 		JButton btn = new JButton(text);
 
@@ -390,7 +372,6 @@ public class IPS implements ActionListener{
         });
 
         return btn;
-
 	}
 	
 	private JButton createBackButton(String string) {
@@ -421,15 +402,12 @@ public class IPS implements ActionListener{
         }
     }
 	
-
     public static void main(String[] args) {
         new IPS();
     }
 
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 }
