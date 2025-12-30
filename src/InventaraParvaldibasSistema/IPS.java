@@ -45,7 +45,8 @@ public class IPS implements ActionListener{
 	private JPanel cardPanel;
 	private JTable ProduktuParadisana;
 	private JButton nonemtProduktu;
-	private JPanel Tabula;
+	private JPanel NonemtTabulu;
+	private JPanel ParaditTabulu;
 	private HashMap<String,String> ProduktuSaraksts = new HashMap<>();
 	private FileWriter fl;
 	private Color bg = new Color(30, 30, 30);
@@ -115,7 +116,10 @@ public class IPS implements ActionListener{
 		cardLayout.show(cardPanel,"Noņemt");
 		TabulaParadit();
 		});
-		listBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Parādīt"));
+		listBtn.addActionListener(e  -> {
+		cardLayout.show(cardPanel,"Parādīt");
+		ParaditTabulu();
+		});
 		exportBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Faila izveide"));
 		
 		main.add(addBtn);
@@ -204,11 +208,11 @@ public class IPS implements ActionListener{
 	    .setCellEditor(ProduktuParadisana.getDefaultEditor(Boolean.class));
 		
 		JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
-		Tabula.removeAll();
-		Tabula.add(scrollN);
-		Tabula.revalidate();
-		Tabula.repaint();
-		Tabula.setBackground(panel);
+		NonemtTabulu.removeAll();
+		NonemtTabulu.add(scrollN);
+		NonemtTabulu.revalidate();
+		NonemtTabulu.repaint();
+		NonemtTabulu.setBackground(panel);
 		ProduktuParadisana.setGridColor(panel);
 		
 		JTableHeader galvene = ProduktuParadisana.getTableHeader();
@@ -226,8 +230,8 @@ public class IPS implements ActionListener{
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
 
-        Tabula = new JPanel();
-        forma.add(Tabula);
+        NonemtTabulu = new JPanel();
+        forma.add(NonemtTabulu);
         
 			
 		 nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
@@ -266,6 +270,44 @@ public class IPS implements ActionListener{
 	}
 
 	// - PARADISANAS LAPA
+	private void ParaditTabulu() {
+		String[] columnNames = {"Nosaukums", "Skaits"};
+		
+		  
+	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
+	    int i = 0;
+	    for(String key: ProduktuSaraksts.keySet()) {
+	    	DatiHM[i][0] = key;
+	    	DatiHM[i][1] = ProduktuSaraksts.get(key);
+	    	i++;
+	    }
+		
+		
+		ProduktuParadisana = new JTable(DatiHM, columnNames) {
+			public boolean editCellAt(int row, int column, EventObject e) {
+	    		return false;
+	    	}
+		};
+		JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
+		
+		ProduktuParadisana.setAutoCreateRowSorter(true);
+		TableRowSorter<?> Sakartot = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
+		Sakartot.toggleSortOrder(0);
+	
+		
+		
+		ParaditTabulu.removeAll();
+		ParaditTabulu.add(scrollN);
+		ParaditTabulu.revalidate();
+		ParaditTabulu.repaint();
+		ParaditTabulu.setBackground(panel);
+		ProduktuParadisana.setGridColor(panel);
+		
+		JTableHeader galvene = ProduktuParadisana.getTableHeader();
+		galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		galvene.setBackground(panel);
+		galvene.setForeground(textColor);
+	}
 	private void Show() {
 		paradit = new JPanel(new BorderLayout());
 		paradit.setBackground(panel);
@@ -274,54 +316,12 @@ public class IPS implements ActionListener{
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
-        JButton ParaditProduktus = new JButton("Parādīt visus produktus");
-		forma.add(ParaditProduktus);
+        
 		
-		JPanel Tabula = new JPanel();
-		forma.add(Tabula);
+        ParaditTabulu = new JPanel();
+        forma.add(ParaditTabulu);
 		
-		ParaditProduktus.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String[] columnNames = {"Nosaukums", "Skaits"};
-				
-			  
-			    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
-			    int i = 0;
-			    for(String key: ProduktuSaraksts.keySet()) {
-			    	DatiHM[i][0] = key;
-			    	DatiHM[i][1] = ProduktuSaraksts.get(key);
-			    	i++;
-			    }
-				
-				
-				ProduktuParadisana = new JTable(DatiHM, columnNames) {
-					public boolean editCellAt(int row, int column, EventObject e) {
-			    		return false;
-			    	}
-				};
-				JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
-				
-				ProduktuParadisana.setAutoCreateRowSorter(true);
-				TableRowSorter<?> Sakartot = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
-				Sakartot.toggleSortOrder(0);
-			
-				
-				
-				Tabula.removeAll();
-				Tabula.add(scrollN);
-				Tabula.revalidate();
-				Tabula.repaint();
-				Tabula.setBackground(panel);
-				ProduktuParadisana.setGridColor(panel);
-				
-				JTableHeader galvene = ProduktuParadisana.getTableHeader();
-				galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				galvene.setBackground(panel);
-				galvene.setForeground(textColor);		
-			}
-		});
+		
 		
 		paradit.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		paradit.add(forma, BorderLayout.CENTER);
