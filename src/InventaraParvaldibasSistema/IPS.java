@@ -208,7 +208,7 @@ public class IPS implements ActionListener{
 		
 	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][5];
 	   
-	    for(int i = 0;i<ProduktuSaraksts.size();i++ ) {
+	    for(int i = 1;i<ProduktuSaraksts.size();i++ ) {
 	    	Products p = ProduktuSaraksts.get(i);
 	    	DatiHM[i][0] = Boolean.FALSE;
 	    	DatiHM[i][1] = p.id;
@@ -290,11 +290,11 @@ public class IPS implements ActionListener{
 
 	// - PARADISANAS LAPA
 	private void ParaditTabulu() {
-		String[] columnNames = {"Nosaukums","Kategorija","Skaits"};
+		String[] columnNames = {"ID","Nosaukums","Kategorija","Skaits"};
 		
 	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][4];
 	    
-	    for(int i = 0;i<ProduktuSaraksts.size();i++ ) {
+	    for(int i = 1;i<ProduktuSaraksts.size();i++ ) {
 	    	Products p = ProduktuSaraksts.get(i);
 	    	DatiHM[i][0] = p.id;
 	    	DatiHM[i][1] = p.nosaukums;
@@ -372,10 +372,12 @@ public class IPS implements ActionListener{
 		teksts.add(forma, BorderLayout.CENTER);
 	}
 	private int TextString() throws IOException {
-		for(String nosaukums: ProduktuSaraksts.keySet()) {
-			String key = nosaukums.toString();
-			String value = ProduktuSaraksts.get(nosaukums).toString();
-			fl.write(key+" "+value);
+		for(Products p : ProduktuSaraksts) {
+			int ID = p.id;
+			String nosaukums = p.nosaukums;
+			String kategorija = p.kategorija;
+			int skaits = p.skaits;
+			fl.write(ID+" "+nosaukums+" "+kategorija+" "+skaits);
 		}
 		return 0;
 	}
