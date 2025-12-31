@@ -104,6 +104,7 @@ public class IPS implements ActionListener{
 		JButton removeBtn = createButton("Noņemt produktu","remove.png");
 		JButton listBtn = createButton("Parādīt visus produktus","list.png");
 		JButton exportBtn = createButton("Pārtaisīt produktu sarakstu teksta failā","file.png");
+		JButton exitBtn = createButton("Beigt darbu","");
 		
 		addBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Pievienot"));
 		removeBtn.addActionListener(e  -> {
@@ -115,11 +116,13 @@ public class IPS implements ActionListener{
 		ParaditTabulu();
 		});
 		exportBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Faila izveide"));
+		exitBtn.addActionListener(e -> System.exit(0));
 		
 		main.add(addBtn);
 		main.add(removeBtn);
 		main.add(listBtn);
 		main.add(exportBtn);
+		main.add(exitBtn);
 		
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -139,6 +142,7 @@ public class IPS implements ActionListener{
         
         JButton pievienotProduktu = createButton("Pievienot jaunu produktu","add.png");
 	    forma.add(pievienotProduktu);
+	    
 		JTextField produkts = new JTextField(16);
 		
 		produkts.setBackground(btnNormal);
@@ -224,9 +228,9 @@ public class IPS implements ActionListener{
         forma.add(NonemtTabulu);
         
 		 nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
-			forma.add(nonemtProduktu);
+		 forma.add(nonemtProduktu);
 			
-			nonemtProduktu.addActionListener(new ActionListener() {
+		 nonemtProduktu.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -412,4 +416,4 @@ public class IPS implements ActionListener{
 	}
 }
 
-// Noformējums jāmaina;
+
