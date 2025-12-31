@@ -13,12 +13,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EventObject;
-import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,13 +48,29 @@ public class IPS implements ActionListener{
 	private JButton nonemtProduktu;
 	private JPanel NonemtTabulu;
 	private JPanel ParaditTabulu;
-	private HashMap<String,Integer> ProduktuSaraksts = new HashMap<>();
+	private ArrayList<Products> ProduktuSaraksts = new ArrayList<>();
 	private FileWriter fl;
 	private Color bg = new Color(30, 30, 30);
 	private Color textColor = new Color(230, 230, 230);
     private Color panel = new Color(45, 45, 45);
 	private Color btnNormal = new Color(60, 60, 60);
 	private Color btnHover = new Color(90, 90, 90);
+	
+	
+	public class Products{
+		int id;
+		String nosaukums;
+		String kategorija;
+		int skaits;
+		
+		public Products(int id, String nosaukums, String kategorija, int skaits) {
+			this.id = id;
+			this.nosaukums = nosaukums;
+			this.kategorija = kategorija;
+			this.skaits = skaits;
+					
+		}
+	}
 	
 	public IPS() {
 		frame = new JFrame();
@@ -148,6 +165,10 @@ public class IPS implements ActionListener{
 		produkts.setBackground(btnNormal);
 		produkts.setForeground(textColor);
 	 	forma.add(produkts);
+	 	String[] izveles = {"Pārtika","Elektronika","Būvmateriāli","Higiēna","Cits.."};
+	 	JComboBox <String> cb = new JComboBox<String>(izveles);
+	 	cb.setVisible(true);
+	 	forma.add(cb);
 	    JTextField skaits = new JTextField(16);
 	    skaits.setBackground(btnNormal);
 	    skaits.setForeground(textColor);
@@ -157,7 +178,9 @@ public class IPS implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int i = 0;
 				String ProduktaNosaukums = produkts.getText().trim();
+				String PorduktaKategorija = (String) cb.getSelectedItem();
 				String ProduktaSkaitsTeksts = skaits.getText().trim();
 				if(ProduktaNosaukums.isEmpty() || ProduktaSkaitsTeksts.isEmpty() ) {
 					JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet tekstu!");
@@ -171,7 +194,7 @@ public class IPS implements ActionListener{
 			    	JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet skaitli!");
 			    	return;
 			    }
-			    ProduktuSaraksts.put(ProduktaNosaukums,ProduktaSkaits);
+			    ProduktuSaraksts.add(new Products(i++,ProduktaNosaukums,PorduktaKategorija,ProduktaSkaits));
 				produkts.setText("");
 			    skaits.setText("");
 			}
@@ -181,15 +204,18 @@ public class IPS implements ActionListener{
 		
 	// - NONEMSANAS LAPA
 	private void TabulaParadit() {
-    	String[] columnNames = {"Izvēlēties","Nosaukums", "Skaits"};
+    	String[] columnNames = {"Izvēlēties","ID","Nosaukums","Kategorija", "Skaits"};
 		
-	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][3];
-	    int i = 0;
-	    for(String key: ProduktuSaraksts.keySet()) {
+	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][5];
+	   
+	    for(int i = 0;i<ProduktuSaraksts.size();i++ ) {
+	    	Products p = ProduktuSaraksts.get(i);
 	    	DatiHM[i][0] = Boolean.FALSE;
-	    	DatiHM[i][1] = key;
-	    	DatiHM[i][2] = ProduktuSaraksts.get(key);
-	    	i++;
+	    	DatiHM[i][1] = p.id;
+	    	DatiHM[i][2] = p.nosaukums;
+	    	DatiHM[i][3] = p.kategorija;
+	    	DatiHM[i][4] = p.skaits;
+	    	
 	    }
 
 	    DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames);
@@ -250,9 +276,9 @@ public class IPS implements ActionListener{
 			            if (Boolean.TRUE.equals(checked)) {
 			                int modelRow = ProduktuParadisana.convertRowIndexToModel(viewRow);
 
-			                String key = String.valueOf(model.getValueAt(modelRow, 1)); 
-			                ProduktuSaraksts.remove(key);  
-			                model.removeRow(modelRow);     
+			                int id = (int) model.getValueAt(modelRow, 1);
+			                ProduktuSaraksts.removeIf(p -> p.id == id);
+			                model.removeRow(modelRow);
 			            	}
 			        }
 				}
@@ -264,14 +290,16 @@ public class IPS implements ActionListener{
 
 	// - PARADISANAS LAPA
 	private void ParaditTabulu() {
-		String[] columnNames = {"Nosaukums", "Skaits"};
+		String[] columnNames = {"Nosaukums","Kategorija","Skaits"};
 		
-	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][2];
-	    int i = 0;
-	    for(String key: ProduktuSaraksts.keySet()) {
-	    	DatiHM[i][0] = key;
-	    	DatiHM[i][1] = ProduktuSaraksts.get(key);
-	    	i++;
+	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][4];
+	    
+	    for(int i = 0;i<ProduktuSaraksts.size();i++ ) {
+	    	Products p = ProduktuSaraksts.get(i);
+	    	DatiHM[i][0] = p.id;
+	    	DatiHM[i][1] = p.nosaukums;
+	    	DatiHM[i][2] = p.kategorija;
+	    	DatiHM[i][3] = p.skaits;
 	    }
 		
 		ProduktuParadisana = new JTable(DatiHM, columnNames) {
