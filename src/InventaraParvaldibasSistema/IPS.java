@@ -55,6 +55,7 @@ public class IPS implements ActionListener{
     private Color panel = new Color(45, 45, 45);
 	private Color btnNormal = new Color(60, 60, 60);
 	private Color btnHover = new Color(90, 90, 90);
+	private int NakamaisID = 1;
 	
 	
 	public class Products{
@@ -178,7 +179,7 @@ public class IPS implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int i = 0;
+				
 				String ProduktaNosaukums = produkts.getText().trim();
 				String PorduktaKategorija = (String) cb.getSelectedItem();
 				String ProduktaSkaitsTeksts = skaits.getText().trim();
@@ -194,7 +195,7 @@ public class IPS implements ActionListener{
 			    	JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet skaitli!");
 			    	return;
 			    }
-			    ProduktuSaraksts.add(new Products(i++,ProduktaNosaukums,PorduktaKategorija,ProduktaSkaits));
+			    ProduktuSaraksts.add(new Products(NakamaisID++,ProduktaNosaukums,PorduktaKategorija,ProduktaSkaits));
 				produkts.setText("");
 			    skaits.setText("");
 			}
@@ -208,7 +209,7 @@ public class IPS implements ActionListener{
 		
 	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][5];
 	   
-	    for(int i = 1;i<ProduktuSaraksts.size();i++ ) {
+	    for(int i = 0;i<ProduktuSaraksts.size();i++) {
 	    	Products p = ProduktuSaraksts.get(i);
 	    	DatiHM[i][0] = Boolean.FALSE;
 	    	DatiHM[i][1] = p.id;
@@ -225,8 +226,12 @@ public class IPS implements ActionListener{
 	    .setCellRenderer(ProduktuParadisana.getDefaultRenderer(Boolean.class));
 	    ProduktuParadisana.getColumnModel().getColumn(0)
 	    .setCellEditor(ProduktuParadisana.getDefaultEditor(Boolean.class));
+	    
 		
 		JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
+		ProduktuParadisana.setAutoCreateRowSorter(true);
+		TableRowSorter<?> SakartotN = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
+		SakartotN.toggleSortOrder(1);
 		NonemtTabulu.removeAll();
 		NonemtTabulu.add(scrollN);
 		NonemtTabulu.revalidate();
@@ -294,7 +299,7 @@ public class IPS implements ActionListener{
 		
 	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][4];
 	    
-	    for(int i = 1;i<ProduktuSaraksts.size();i++ ) {
+	    for(int i = 0;i<ProduktuSaraksts.size();i++ ) {
 	    	Products p = ProduktuSaraksts.get(i);
 	    	DatiHM[i][0] = p.id;
 	    	DatiHM[i][1] = p.nosaukums;
@@ -377,7 +382,7 @@ public class IPS implements ActionListener{
 			String nosaukums = p.nosaukums;
 			String kategorija = p.kategorija;
 			int skaits = p.skaits;
-			fl.write(ID+" "+nosaukums+" "+kategorija+" "+skaits);
+			fl.write(ID+" | | "+nosaukums+" | | "+kategorija+" | | "+skaits+"\n");
 		}
 		return 0;
 	}
