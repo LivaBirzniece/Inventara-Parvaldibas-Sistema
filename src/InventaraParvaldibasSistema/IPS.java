@@ -49,7 +49,7 @@ public class IPS implements ActionListener{
 	private JButton nonemtProduktu;
 	private JPanel NonemtTabulu;
 	private JPanel ParaditTabulu;
-	private JPanel TabulaRedige;
+	private JPanel TabulaRediget;
 	private ArrayList<Products> ProduktuSaraksts = new ArrayList<>();
 	private FileWriter fl;
 	private Color bg = new Color(30, 30, 30);
@@ -332,11 +332,11 @@ public class IPS implements ActionListener{
 		ProduktuParadisana.setAutoCreateRowSorter(true);
 		TableRowSorter<?> SakartotE = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
 		SakartotE.toggleSortOrder(1);
-		TabulaRedige.removeAll();
-		TabulaRedige.add(scrollE);
-		TabulaRedige.revalidate();
-		TabulaRedige.repaint();
-		TabulaRedige.setBackground(panel);
+		TabulaRediget.removeAll();
+		TabulaRediget.add(scrollE);
+		TabulaRediget.revalidate();
+		TabulaRediget.repaint();
+		TabulaRediget.setBackground(panel);
 		ProduktuParadisana.setGridColor(panel);
 		scrollE.getViewport().setBackground(Color.LIGHT_GRAY);
 		scrollE.setBackground(Color.LIGHT_GRAY);				
@@ -355,9 +355,15 @@ public class IPS implements ActionListener{
         forma.setBackground(panel);
         forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         
-        TabulaRedige = new JPanel();
-        forma.add(TabulaRedige);
+        TabulaRediget = new JPanel();
+        forma.add(TabulaRediget);
         
+        JButton redigetPoga = new JButton("Rediģēt");
+        forma.add(redigetPoga);
+        
+        
+        
+        rediget.add(forma, BorderLayout.CENTER); 
         
 	}
 
