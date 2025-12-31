@@ -39,6 +39,7 @@ public class IPS implements ActionListener{
 	private JFrame frame;
 	private JPanel main;
 	private JPanel pievienot;
+	private JPanel rediget;
 	private JPanel nonemt;
 	private JPanel paradit;
 	private JPanel teksts;
@@ -48,6 +49,7 @@ public class IPS implements ActionListener{
 	private JButton nonemtProduktu;
 	private JPanel NonemtTabulu;
 	private JPanel ParaditTabulu;
+	private JPanel TabulaRedige;
 	private ArrayList<Products> ProduktuSaraksts = new ArrayList<>();
 	private FileWriter fl;
 	private Color bg = new Color(30, 30, 30);
@@ -92,6 +94,7 @@ public class IPS implements ActionListener{
 		main = new JPanel(new GridLayout(0,1));
 		pievienot = new JPanel();
 		nonemt = new JPanel();
+		rediget = new JPanel();
 		paradit = new JPanel();
 		teksts = new JPanel();
 		
@@ -102,12 +105,14 @@ public class IPS implements ActionListener{
 		Main();
 		Add();
 		Remove();
+		Edit();
 		Show();
 		Text();
 		
 		cardPanel.add(main,"Galvenā lapa");
 		cardPanel.add(pievienot,"Pievienot");
 		cardPanel.add(nonemt,"Noņemt");
+		cardPanel.add(rediget,"Rediģēt");
 		cardPanel.add(paradit,"Parādīt");
 		cardPanel.add(teksts,"Faila izveide");
 	}
@@ -120,6 +125,7 @@ public class IPS implements ActionListener{
         
         JButton addBtn = createButton("Pievienot produktu","Bildes/add.png");
 		JButton removeBtn = createButton("Noņemt produktu","remove.png");
+		JButton editBtn = createButton("Rediģēt","");
 		JButton listBtn = createButton("Parādīt visus produktus","list.png");
 		JButton exportBtn = createButton("Pārtaisīt produktu sarakstu teksta failā","file.png");
 		JButton exitBtn = createButton("Beigt darbu","");
@@ -128,6 +134,10 @@ public class IPS implements ActionListener{
 		removeBtn.addActionListener(e  -> {
 		cardLayout.show(cardPanel,"Noņemt");
 		TabulaParadit();
+		});
+		editBtn.addActionListener(e -> {
+		cardLayout.show(cardPanel, "Rediģēt");
+		TabulaRediget();
 		});
 		listBtn.addActionListener(e  -> {
 		cardLayout.show(cardPanel,"Parādīt");
@@ -138,6 +148,7 @@ public class IPS implements ActionListener{
 		
 		main.add(addBtn);
 		main.add(removeBtn);
+		main.add(editBtn);
 		main.add(listBtn);
 		main.add(exportBtn);
 		main.add(exitBtn);
@@ -291,6 +302,63 @@ public class IPS implements ActionListener{
 			});
 		nonemt.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
 		nonemt.add(forma, BorderLayout.CENTER);
+	}
+	// - REDIGESANAS LAPA
+	private void TabulaRediget() {
+		String[] columnNames = {"Rediģēt","ID","Nosaukums","Kategorija", "Skaits"};
+				
+	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][5];
+			   
+	    for(int i = 0;i<ProduktuSaraksts.size();i++) {
+			   Products p = ProduktuSaraksts.get(i);
+			   DatiHM[i][0] = Boolean.FALSE;
+			   DatiHM[i][1] = p.id;
+			   DatiHM[i][2] = p.nosaukums;
+			   DatiHM[i][3] = p.kategorija;
+			   DatiHM[i][4] = p.skaits;
+			    	
+			}
+		
+		DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames);
+		ProduktuParadisana = new JTable(model);
+			    
+		ProduktuParadisana.getColumnModel().getColumn(0)
+		.setCellRenderer(ProduktuParadisana.getDefaultRenderer(Boolean.class));
+		ProduktuParadisana.getColumnModel().getColumn(0)
+		.setCellEditor(ProduktuParadisana.getDefaultEditor(Boolean.class));
+			    
+				
+		JScrollPane scrollE = new JScrollPane(ProduktuParadisana);
+		ProduktuParadisana.setAutoCreateRowSorter(true);
+		TableRowSorter<?> SakartotE = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
+		SakartotE.toggleSortOrder(1);
+		TabulaRedige.removeAll();
+		TabulaRedige.add(scrollE);
+		TabulaRedige.revalidate();
+		TabulaRedige.repaint();
+		TabulaRedige.setBackground(panel);
+		ProduktuParadisana.setGridColor(panel);
+		scrollE.getViewport().setBackground(Color.LIGHT_GRAY);
+		scrollE.setBackground(Color.LIGHT_GRAY);				
+		JTableHeader galvene = ProduktuParadisana.getTableHeader();
+		galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		galvene.setBackground(panel);
+		galvene.setForeground(textColor);
+	}
+	private void Edit() {
+		rediget = new JPanel(new BorderLayout());
+        rediget.setBackground(panel);
+        
+        rediget.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
+        
+        JPanel forma = new JPanel(new GridLayout(0,1,10,10));
+        forma.setBackground(panel);
+        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        
+        TabulaRedige = new JPanel();
+        forma.add(TabulaRedige);
+        
+        
 	}
 
 	// - PARADISANAS LAPA
