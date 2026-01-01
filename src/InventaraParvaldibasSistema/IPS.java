@@ -34,7 +34,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 
 
-
 public class IPS implements ActionListener{
 	private JFrame frame;
 	private JPanel main;
@@ -50,6 +49,7 @@ public class IPS implements ActionListener{
 	private JPanel NonemtTabulu;
 	private JPanel ParaditTabulu;
 	private JPanel TabulaRediget;
+	private JPanel redigetOpciju;
 	private ArrayList<Products> ProduktuSaraksts = new ArrayList<>();
 	private FileWriter fl;
 	private Color bg = new Color(30, 30, 30);
@@ -58,6 +58,10 @@ public class IPS implements ActionListener{
 	private Color btnNormal = new Color(60, 60, 60);
 	private Color btnHover = new Color(90, 90, 90);
 	private int NakamaisID = 1;
+	private Products editTarget;
+	private JTextField editNosaukums;
+	private JComboBox<String> editKategorija;
+	private JTextField editSkaits;
 	
 	
 	public class Products{
@@ -106,6 +110,7 @@ public class IPS implements ActionListener{
 		Add();
 		Remove();
 		Edit();
+		EditOption();
 		Show();
 		Text();
 		
@@ -113,6 +118,7 @@ public class IPS implements ActionListener{
 		cardPanel.add(pievienot,"Pievienot");
 		cardPanel.add(nonemt,"Noņemt");
 		cardPanel.add(rediget,"Rediģēt");
+		cardPanel.add(redigetOpciju,"Rediģēt opciju");
 		cardPanel.add(paradit,"Parādīt");
 		cardPanel.add(teksts,"Faila izveide");
 	}
@@ -241,6 +247,7 @@ public class IPS implements ActionListener{
 		
 		JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
 		ProduktuParadisana.setAutoCreateRowSorter(true);
+		//Šeit ir <?> , jo nav nozīme kāds tips būs iekšā
 		TableRowSorter<?> SakartotN = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
 		SakartotN.toggleSortOrder(1);
 		NonemtTabulu.removeAll();
@@ -276,10 +283,7 @@ public class IPS implements ActionListener{
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (ProduktuParadisana == null) {
-				        JOptionPane.showMessageDialog(forma, "Vispirms nospied: Parādīt visus produktus!");
-				        return;
-				    }
+					
 					if (ProduktuParadisana.isEditing()) {
 					    ProduktuParadisana.getCellEditor().stopCellEditing();
 					}
@@ -361,12 +365,136 @@ public class IPS implements ActionListener{
         JButton redigetPoga = new JButton("Rediģēt");
         forma.add(redigetPoga);
         
-        
+        redigetPoga.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (ProduktuParadisana.isEditing()) {
+				    ProduktuParadisana.getCellEditor().stopCellEditing();
+				}
+
+				DefaultTableModel model = (DefaultTableModel) ProduktuParadisana.getModel();
+
+				Integer izveletaisId = null;
+				int skaititajs = 0;
+
+				for (int viewRow = 0; viewRow < ProduktuParadisana.getRowCount(); viewRow++) {
+				    Object checked = ProduktuParadisana.getValueAt(viewRow, 0);
+				    if (Boolean.TRUE.equals(checked)) {
+				    	skaititajs++;
+				        int modelRow = ProduktuParadisana.convertRowIndexToModel(viewRow);
+				        izveletaisId = (Integer) model.getValueAt(modelRow, 1);
+				    }
+				}
+
+				if (skaititajs == 0) {
+				    JOptionPane.showMessageDialog(rediget, "Izvēlies, kuru produktu vēlies rediģēt!");
+				    return;
+				}
+				if (skaititajs > 1) {
+				    JOptionPane.showMessageDialog(rediget, "Izvēlies tikai vienu produktu!");
+				    return;
+				}
+
+				Products p = null;
+				for (Products pr : ProduktuSaraksts) {
+				    if (pr.id == izveletaisId) { p = pr; break; }
+				}
+				if (p == null) return;
+
+				
+				editTarget = p;
+				editNosaukums.setText(p.nosaukums);
+				editKategorija.setSelectedItem(p.kategorija);
+				editSkaits.setText(String.valueOf(p.skaits));
+
+				cardLayout.show(cardPanel, "Rediģēt opciju");
+			}
+        	
+        });
         
         rediget.add(forma, BorderLayout.CENTER); 
         
 	}
+	private void EditOption() {
+		redigetOpciju = new JPanel(new BorderLayout());
+	    redigetOpciju.setBackground(panel);
 
+
+	    JButton back = new JButton("<- Atpakaļ");
+	    back.setFocusPainted(false);
+	    back.setBackground(btnNormal);
+	    back.setForeground(textColor);
+	    back.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+	    back.setBorder(new RoundedBorder(12));
+	    back.setContentAreaFilled(false);
+	    back.addActionListener(e -> cardLayout.show(cardPanel, "Rediģēt"));
+	    redigetOpciju.add(back, BorderLayout.NORTH);
+
+	    JPanel forma = new JPanel(new GridLayout(0,1,10,10));
+	    forma.setBackground(panel);
+	    forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+
+	    editNosaukums = new JTextField(16);
+	    editNosaukums.setBackground(btnNormal);
+	    editNosaukums.setForeground(textColor);
+
+	    String[] izveles = {"Pārtika","Elektronika","Būvmateriāli","Higiēna","Cits.."};
+	    editKategorija = new JComboBox<>(izveles);
+
+	    editSkaits = new JTextField(16);
+	    editSkaits.setBackground(btnNormal);
+	    editSkaits.setForeground(textColor);
+
+	    JButton apstiprinat = createButton("Apstiprināt", "");
+	    JButton atcelt = createButton("Atcelt", "");
+
+	    forma.add(editNosaukums);
+
+	    forma.add(editKategorija);
+
+	    forma.add(editSkaits);
+	    forma.add(apstiprinat);
+	    forma.add(atcelt);
+
+	    apstiprinat.addActionListener(e -> {
+	        if (editTarget == null) return;
+
+	        String n = editNosaukums.getText().trim();
+	        String k = (String) editKategorija.getSelectedItem();
+	        String sTxt = editSkaits.getText().trim();
+
+	        if (n.isEmpty() || sTxt.isEmpty()) {
+	            JOptionPane.showMessageDialog(redigetOpciju, "Aizpildi visus laukus!");
+	            return;
+	        }
+
+	        int s;
+	        try { s = Integer.parseInt(sTxt); }
+	        catch (NumberFormatException ex) {
+	            JOptionPane.showMessageDialog(redigetOpciju, "Skaitam jābūt skaitlim!");
+	            return;
+	        }
+
+	   
+	        editTarget.nosaukums = n;
+	        editTarget.kategorija = k;
+	        editTarget.skaits = s;
+
+	  
+	        TabulaRediget();
+	        cardLayout.show(cardPanel, "Rediģēt");
+	        editTarget = null;
+	    });
+
+	    atcelt.addActionListener(e -> {
+	        editTarget = null;
+	        cardLayout.show(cardPanel, "Rediģēt");
+	    });
+
+	    redigetOpciju.add(forma, BorderLayout.CENTER);
+	}
+	
 	// - PARADISANAS LAPA
 	private void ParaditTabulu() {
 		String[] columnNames = {"ID","Nosaukums","Kategorija","Skaits"};
