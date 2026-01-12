@@ -177,19 +177,24 @@ public class IPS implements ActionListener{
         
         JButton pievienotProduktu = createButton("Pievienot jaunu produktu","add.png");
 	    forma.add(pievienotProduktu);
-	    
+	    JLabel produktsLabel = new JLabel("Produkts:");
 		JTextField produkts = new JTextField(16);
 		
 		produkts.setBackground(btnNormal);
 		produkts.setForeground(textColor);
-	 	forma.add(produkts);
+		produktsLabel.setForeground(textColor);
+		forma.add(produktsLabel);
+		forma.add(produkts);
 	 	String[] izveles = {"Pārtika","Elektronika","Būvmateriāli","Higiēna","Cits.."};
 	 	JComboBox <String> cb = new JComboBox<String>(izveles);
 	 	cb.setVisible(true);
 	 	forma.add(cb);
+	 	JLabel skaitsLabel = new JLabel("Skaits:");
 	    JTextField skaits = new JTextField(16);
 	    skaits.setBackground(btnNormal);
 	    skaits.setForeground(textColor);
+	    skaitsLabel.setForeground(textColor);
+	    forma.add(skaitsLabel);
 		forma.add(skaits);
 		
 		pievienotProduktu.addActionListener(new ActionListener() {
@@ -200,11 +205,15 @@ public class IPS implements ActionListener{
 				String ProduktaNosaukums = produkts.getText().trim();
 				String PorduktaKategorija = (String) cb.getSelectedItem();
 				String ProduktaSkaitsTeksts = skaits.getText().trim();
-				if(ProduktaNosaukums.isEmpty() || ProduktaSkaitsTeksts.isEmpty() ) {
-					JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet tekstu!");
-					return;
-				};
 				
+				if (ProduktaNosaukums.isEmpty()) {
+				    JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet produkta nosaukumu!");
+				    return;
+				}
+				if (ProduktaSkaitsTeksts.isEmpty()) {
+					JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet produkta skaitu!");
+				    return;
+				}
 				int ProduktaSkaits;
 			    try {
 			    	ProduktaSkaits = Integer.parseInt(ProduktaSkaitsTeksts);
@@ -236,7 +245,21 @@ public class IPS implements ActionListener{
 	    	
 	    }
 
-	    DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames);
+	    DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames) {
+	    	@Override
+	        public boolean isCellEditable(int row, int column) {
+	            return column == 0; // tikai checkbox kolonna
+	        }
+
+	        @Override
+	        public Class<?> getColumnClass(int column) {
+	            if (column == 0) {
+	                return Boolean.class; //checkbox
+	            }
+	            return Object.class;
+	        }
+	   
+	    };
 	    ProduktuParadisana = new JTable(model);
 	    
 	    ProduktuParadisana.getColumnModel().getColumn(0)
@@ -292,7 +315,8 @@ public class IPS implements ActionListener{
 
 			        for (int viewRow = ProduktuParadisana.getRowCount() - 1; viewRow >= 0; viewRow--) {
 			            Object checked = ProduktuParadisana.getValueAt(viewRow, 0);
-
+			         
+						
 			            if (Boolean.TRUE.equals(checked)) {
 			                int modelRow = ProduktuParadisana.convertRowIndexToModel(viewRow);
 
@@ -323,7 +347,22 @@ public class IPS implements ActionListener{
 			    	
 			}
 		
-		DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames);
+		DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames) {
+			@Override
+	        public boolean isCellEditable(int row, int column) {
+	            return column == 0; // tikai checkbox kolonna
+	        }
+
+	        @Override
+	        public Class<?> getColumnClass(int column) {
+	            if (column == 0) {
+	                return Boolean.class; //checkbox
+	            }
+	            return Object.class;
+	        }
+	   
+	    
+		};
 		ProduktuParadisana = new JTable(model);
 			    
 		ProduktuParadisana.getColumnModel().getColumn(0)
