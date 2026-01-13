@@ -173,16 +173,16 @@ public class IPS {
 
         JTable t = new JTable(m);
         t.setRowHeight(50);
-        t.setBackground(ModernsDizains.BG_DARK); // Melns fons tabulai
+        t.setBackground(ModernsDizains.BG_DARK);
         t.setFillsViewportHeight(true);
         t.setGridColor(new Color(40, 40, 45));
         
-        // Centrs un krāsa visām šūnām
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         centerRenderer.setBackground(ModernsDizains.BG_DARK);
         centerRenderer.setForeground(Color.WHITE);
-        centerRenderer.setBorder(null); // Noņem iekšējos outline
+        centerRenderer.setBorder(null); 
 
         for(int i=(editMode?1:0); i<t.getColumnCount(); i++) {
             t.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -236,12 +236,12 @@ public class IPS {
 
     private void exportToTxt() {
         try (FileWriter w = new FileWriter("Inventars.txt")) {
-            // Galvene ar skaidrojumiem
+
             w.write(String.format("%-5s | %-15s | %-20s | %-15s | %-10s\n", "ID", "STĀVOKLIS", "NOSAUKUMS", "KATEGORIJA", "SKAITS"));
             w.write("------------------------------------------------------------------------------\n");
             
             for(Product p : products) {
-                // Izvade pēc tavas vēlmes: ID | STĀVOKLIS | NOSAUKUMS utt.
+
                 w.write(String.format("%-5d | %-15s | %-20s | %-15s | %-10d\n", 
                         p.id, p.condition, p.name, p.category, p.count));
             }

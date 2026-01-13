@@ -16,7 +16,7 @@ public class ModernsDizains {
             UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarkLaf");
         } catch (Exception e) {}
         
-        // Noņem fokusa rāmjus (outline) ap tekstu un pogām
+
         UIManager.put("Component.focusWidth", 0);
         UIManager.put("Button.focusWidth", 0);
         UIManager.put("ScrollBar.showButtons", true);
