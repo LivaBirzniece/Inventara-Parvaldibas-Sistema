@@ -235,6 +235,10 @@ public class IPS {
     }
 
     private void exportToTxt() {
+    	if (products.isEmpty()) {
+    		JOptionPane.showMessageDialog(frame, "Nav datu, ko eksportēt!");
+    		return;
+    	}
         try (FileWriter w = new FileWriter("Inventars.txt")) {
 
             w.write(String.format("%-5s | %-15s | %-20s | %-15s | %-10s\n", "ID", "STĀVOKLIS", "NOSAUKUMS", "KATEGORIJA", "SKAITS"));
