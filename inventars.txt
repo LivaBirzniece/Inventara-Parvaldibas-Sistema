@@ -1,4 +1,2 @@
 ID    | STĀVOKLIS       | NOSAUKUMS            | KATEGORIJA      | SKAITS    
 ------------------------------------------------------------------------------
-1     | Lietots         | Dators               | Elektronika     | 1         
-2     | Lietots         | Dators               | Elektronika     | 1         

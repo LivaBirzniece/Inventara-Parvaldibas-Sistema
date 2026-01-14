@@ -6,10 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Downloads/flatlaf-3.7.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/birzn/Documents/eclipse/Inventara-Parvaldibas-Sistema/lib/flatlaf-3.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
