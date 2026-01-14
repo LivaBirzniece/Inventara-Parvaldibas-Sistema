@@ -1,3 +1,2 @@
 ID    | STĀVOKLIS       | NOSAUKUMS            | KATEGORIJA      | SKAITS    
 ------------------------------------------------------------------------------
-1     | Izcils          | Kartupelis           | Pārtika         | 3         
