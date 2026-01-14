@@ -228,7 +228,19 @@ public class IPS {
             JButton d = new JButton("DZĒST ATLASĪTO");
             d.setBackground(new Color(180, 40, 40));
             d.addActionListener(e -> {
-                for(int i = m.getRowCount()-1; i>=0; i--) if((Boolean)m.getValueAt(i,0)) products.remove(i);
+                boolean deleted = false;
+                for (int i = m.getRowCount() - 1; i >= 0; i--) {
+                    Boolean checked = (Boolean) m.getValueAt(i, 0);
+                    if (checked != null && checked) {
+                        int id = (int) m.getValueAt(i, 1); 
+                        products.removeIf(prod -> prod.id == id);
+                        deleted = true;
+                    }
+                }
+                if (!deleted) {
+                    JOptionPane.showMessageDialog(frame, "Nav atlasīts neviens produkts!");
+                    return;
+                }
                 refreshData();
             });
             btm.add(d);
