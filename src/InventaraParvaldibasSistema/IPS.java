@@ -1,695 +1,258 @@
 package InventaraParvaldibasSistema;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EventObject;
-
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.AbstractBorder;
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.io.FileWriter;
+import java.util.ArrayList;
 
+public class IPS {
+    private JFrame frame;
+    private CardLayout layout;
+    private JPanel cards;
+    private ArrayList<Product> products = new ArrayList<>();
+    private DefaultTableModel viewTableModel, editTableModel;
 
-public class IPS implements ActionListener{
-	private JFrame frame;
-	private JPanel main;
-	private JPanel pievienot;
-	private JPanel rediget;
-	private JPanel nonemt;
-	private JPanel paradit;
-	private JPanel teksts;
-	private CardLayout cardLayout;
-	private JPanel cardPanel;
-	private JTable ProduktuParadisana;
-	private JButton nonemtProduktu;
-	private JPanel NonemtTabulu;
-	private JPanel ParaditTabulu;
-	private JPanel TabulaRediget;
-	private JPanel redigetOpciju;
-	private ArrayList<Products> ProduktuSaraksts = new ArrayList<>();
-	private FileWriter fl;
-	private Color bg = new Color(30, 30, 30);
-	private Color textColor = new Color(230, 230, 230);
-    private Color panel = new Color(45, 45, 45);
-	private Color btnNormal = new Color(60, 60, 60);
-	private Color btnHover = new Color(90, 90, 90);
-	private int NakamaisID = 1;
-	private Products editTarget;
-	private JTextField editNosaukums;
-	private JComboBox<String> editKategorija;
-	private JTextField editSkaits;
-	
-	
-	public class Products{
-		int id;
-		String nosaukums;
-		String kategorija;
-		int skaits;
-		
-		public Products(int id, String nosaukums, String kategorija, int skaits) {
-			this.id = id;
-			this.nosaukums = nosaukums;
-			this.kategorija = kategorija;
-			this.skaits = skaits;
-					
-		}
-	}
-	
-	public IPS() {
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 600);
-		frame.getContentPane().setBackground(bg);
-        frame.setLayout(new BorderLayout());
+    public static void main(String[] args) {
+        ModernsDizains.apply();
+        SwingUtilities.invokeLater(IPS::new);
+    }
+
+    public IPS() {
+        frame = new JFrame("Inventāra Pārvaldības Sistēma");
+        frame.setSize(1250, 900);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        layout = new CardLayout();
+        cards = new JPanel(layout);
+        cards.setBackground(ModernsDizains.BG_DARK);
+
+        cards.add(createDashboard(), "MENU");
+        cards.add(createFormPanel(), "ADD");
+        cards.add(createListPanel(false), "VIEW");
+        cards.add(createListPanel(true), "EDIT");
+
+        frame.add(cards);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
+    private JPanel createDashboard() {
+        JPanel p = new JPanel(new BorderLayout());
+        p.setOpaque(false);
+
+        JLabel title = new JLabel("INVENTĀRA PĀRVALDĪBAS SISTĒMA");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 42));
+        title.setForeground(Color.WHITE);
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setBorder(BorderFactory.createEmptyBorder(70, 0, 50, 0));
+        p.add(title, BorderLayout.NORTH);
+
+        JPanel centerWrapper = new JPanel(new GridBagLayout());
+        centerWrapper.setOpaque(false);
+        JPanel grid = new JPanel(new GridLayout(2, 2, 30, 30));
+        grid.setOpaque(false);
+
+        grid.add(setupCard("Pievienot", "Jauns ieraksts", ModernsDizains.ACCENT_BLUE, "ADD"));
+        grid.add(setupCard("Saraksts", "Skatīt visu", new Color(76, 175, 80), "VIEW"));
+        grid.add(setupCard("Rediģēt", "Labot vai dzēst", new Color(255, 152, 0), "EDIT"));
+        grid.add(setupCard("Eksports", "Saglabāt .txt", new Color(156, 39, 176), "EXPORT"));
+
+        centerWrapper.add(grid);
+        p.add(centerWrapper, BorderLayout.CENTER);
+
+        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomBar.setOpaque(false);
+        bottomBar.setBorder(BorderFactory.createEmptyBorder(0, 0, 80, 0));
+
+        JButton exitBtn = new JButton("IZIET NO PROGRAMMAS");
+        exitBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        exitBtn.setForeground(new Color(255, 80, 80));
+        exitBtn.setContentAreaFilled(false);
+        exitBtn.setBorder(BorderFactory.createLineBorder(new Color(255, 80, 80), 2, true));
+        exitBtn.setPreferredSize(new Dimension(300, 55));
+        exitBtn.addActionListener(e -> System.exit(0));
+
+        bottomBar.add(exitBtn);
+        p.add(bottomBar, BorderLayout.SOUTH);
+        return p;
+    }
+
+    private JPanel setupCard(String t, String s, Color c, String target) {
+        JPanel card = ModernsDizains.createCard(t, s, c);
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                if (target.equals("EXPORT")) {
+                    exportToTxt();
+                } else {
+                    refreshData();
+                    layout.show(cards, target);
+                }
+            }
+        });
+        return card;
+    }
+
+    private JPanel createFormPanel() {
+        JPanel p = new JPanel(new GridBagLayout());
+        p.setOpaque(false);
         
-        JLabel title = new JLabel("Inventāra Pārvaldības Sistēma", SwingConstants.CENTER);
-        title.setForeground(textColor);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
-        frame.add(title, BorderLayout.NORTH);
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setBackground(ModernsDizains.CARD_BG);
+        form.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(60, 60, 65), 1),
+            BorderFactory.createEmptyBorder(50, 60, 50, 60)
+        ));
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(15, 15, 15, 15);
+        g.fill = GridBagConstraints.HORIZONTAL;
+
+        JTextField n = new JTextField(20);
+        JComboBox<String> k = new JComboBox<>(new String[]{"Pārtika", "Elektronika", "Mēbeles", "Cits"});
+        JComboBox<String> s = new JComboBox<>(new String[]{"Izcils", "Lietots", "Bojāts", "Norakstīt"});
+        JTextField sk = new JTextField(20);
+
+        styleFieldLabel(form, "Produkta nosaukums", 0, g); g.gridx=1; form.add(n, g);
+        styleFieldLabel(form, "Kategorija", 1, g); g.gridx=1; form.add(k, g);
+        styleFieldLabel(form, "Stāvoklis", 2, g); g.gridx=1; form.add(s, g);
+        styleFieldLabel(form, "Daudzums", 3, g); g.gridx=1; form.add(sk, g);
+
+        JPanel btnRow = new JPanel(new GridLayout(1, 2, 20, 0));
+        btnRow.setOpaque(false);
         
-		cardLayout = new CardLayout();
-		cardPanel = new JPanel(cardLayout);
-		
-		main = new JPanel(new GridLayout(0,1));
-		pievienot = new JPanel();
-		nonemt = new JPanel();
-		rediget = new JPanel();
-		paradit = new JPanel();
-		teksts = new JPanel();
-		
-		main.setBorder(BorderFactory.createEmptyBorder(200,300,200,300));
-		frame.add(cardPanel, BorderLayout.CENTER);
-		frame.setTitle("Inventāra Pārvaldibas Sistēma");
-		
-		Main();
-		Add();
-		Remove();
-		Edit();
-		EditOption();
-		Show();
-		Text();
-		
-		cardPanel.add(main,"Galvenā lapa");
-		cardPanel.add(pievienot,"Pievienot");
-		cardPanel.add(nonemt,"Noņemt");
-		cardPanel.add(rediget,"Rediģēt");
-		cardPanel.add(redigetOpciju,"Rediģēt opciju");
-		cardPanel.add(paradit,"Parādīt");
-		cardPanel.add(teksts,"Faila izveide");
-	}
-		
-	// - GALVENA LAPA
-	private void  Main() {
-		main  = new JPanel(new GridLayout(4,1,16,16));
-		main.setBackground(panel);
-        main.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        JButton back = new JButton("ATPAKAĻ");
+        back.addActionListener(e -> layout.show(cards, "MENU"));
         
-        JButton addBtn = createButton("Pievienot produktu","Bildes/add.png");
-		JButton removeBtn = createButton("Noņemt produktu","remove.png");
-		JButton editBtn = createButton("Rediģēt","");
-		JButton listBtn = createButton("Parādīt visus produktus","list.png");
-		JButton exportBtn = createButton("Pārtaisīt produktu sarakstu teksta failā","file.png");
-		JButton exitBtn = createButton("Beigt darbu","");
-		
-		addBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Pievienot"));
-		removeBtn.addActionListener(e  -> {
-		cardLayout.show(cardPanel,"Noņemt");
-		TabulaParadit();
-		});
-		editBtn.addActionListener(e -> {
-		cardLayout.show(cardPanel, "Rediģēt");
-		TabulaRediget();
-		});
-		listBtn.addActionListener(e  -> {
-		cardLayout.show(cardPanel,"Parādīt");
-		ParaditTabulu();
-		});
-		exportBtn.addActionListener(e  -> cardLayout.show(cardPanel,"Faila izveide"));
-		exitBtn.addActionListener(e -> System.exit(0));
-		
-		main.add(addBtn);
-		main.add(removeBtn);
-		main.add(editBtn);
-		main.add(listBtn);
-		main.add(exportBtn);
-		main.add(exitBtn);
-		
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		
-	}
-		
-	// - PIEVIENOSANAS LAPA
-	private void Add() {
-		pievienot = new JPanel(new BorderLayout());
-        pievienot.setBackground(panel);
+        JButton save = new JButton("SAGLABĀT");
+        save.setBackground(ModernsDizains.ACCENT_BLUE);
+        save.setForeground(Color.WHITE);
         
-        pievienot.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
-        
-        JPanel forma = new JPanel(new GridLayout(0,1,10,10));
-        forma.setBackground(panel);
-        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
-        
-        JButton pievienotProduktu = createButton("Pievienot jaunu produktu","add.png");
-	    forma.add(pievienotProduktu);
-	    JLabel produktsLabel = new JLabel("Produkts:");
-		JTextField produkts = new JTextField(16);
-		
-		produkts.setBackground(btnNormal);
-		produkts.setForeground(textColor);
-		produktsLabel.setForeground(textColor);
-		forma.add(produktsLabel);
-		forma.add(produkts);
-	 	String[] izveles = {"Pārtika","Elektronika","Būvmateriāli","Higiēna","Cits.."};
-	 	JComboBox <String> cb = new JComboBox<String>(izveles);
-	 	cb.setVisible(true);
-	 	forma.add(cb);
-	 	JLabel skaitsLabel = new JLabel("Skaits:");
-	    JTextField skaits = new JTextField(16);
-	    skaits.setBackground(btnNormal);
-	    skaits.setForeground(textColor);
-	    skaitsLabel.setForeground(textColor);
-	    forma.add(skaitsLabel);
-		forma.add(skaits);
-		
-		pievienotProduktu.addActionListener(new ActionListener() {
+        save.addActionListener(e -> {
+            try {
+                String name = n.getText().trim();
+                if (name.isEmpty()) { JOptionPane.showMessageDialog(frame, "Ievadiet nosaukumu!"); return; }
+                int count = Integer.parseInt(sk.getText().trim());
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				String ProduktaNosaukums = produkts.getText().trim();
-				String PorduktaKategorija = (String) cb.getSelectedItem();
-				String ProduktaSkaitsTeksts = skaits.getText().trim();
-				
-				if (ProduktaNosaukums.isEmpty()) {
-				    JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet produkta nosaukumu!");
-				    return;
-				}
-				if (ProduktaSkaitsTeksts.isEmpty()) {
-					JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet produkta skaitu!");
-				    return;
-				}
-				int ProduktaSkaits;
-			    try {
-			    	ProduktaSkaits = Integer.parseInt(ProduktaSkaitsTeksts);
-			    }catch(NumberFormatException x) {
-			    	JOptionPane.showMessageDialog(forma, "Lūdzu ievadiet skaitli!");
-			    	return;
-			    }
-			    ProduktuSaraksts.add(new Products(NakamaisID++,ProduktaNosaukums,PorduktaKategorija,ProduktaSkaits));
-				produkts.setText("");
-			    skaits.setText("");
-			}
-		});
-		pievienot.add(forma, BorderLayout.CENTER);
-	}
-		
-	// - NONEMSANAS LAPA
-	private void TabulaParadit() {
-    	String[] columnNames = {"Izvēlēties","ID","Nosaukums","Kategorija", "Skaits"};
-		
-	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][5];
-	   
-	    for(int i = 0;i<ProduktuSaraksts.size();i++) {
-	    	Products p = ProduktuSaraksts.get(i);
-	    	DatiHM[i][0] = Boolean.FALSE;
-	    	DatiHM[i][1] = p.id;
-	    	DatiHM[i][2] = p.nosaukums;
-	    	DatiHM[i][3] = p.kategorija;
-	    	DatiHM[i][4] = p.skaits;
-	    	
-	    }
-
-	    DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames) {
-	    	@Override
-	        public boolean isCellEditable(int row, int column) {
-	            return column == 0; // tikai checkbox kolonna
-	        }
-
-	        @Override
-	        public Class<?> getColumnClass(int column) {
-	            if (column == 0) {
-	                return Boolean.class; //checkbox
-	            }
-	            return Object.class;
-	        }
-	   
-	    };
-	    ProduktuParadisana = new JTable(model);
-	    
-	    ProduktuParadisana.getColumnModel().getColumn(0)
-	    .setCellRenderer(ProduktuParadisana.getDefaultRenderer(Boolean.class));
-	    ProduktuParadisana.getColumnModel().getColumn(0)
-	    .setCellEditor(ProduktuParadisana.getDefaultEditor(Boolean.class));
-	    
-		
-		JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
-		ProduktuParadisana.setAutoCreateRowSorter(true);
-		//Šeit ir <?> , jo nav nozīme kāds tips būs iekšā
-		TableRowSorter<?> SakartotN = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
-		SakartotN.toggleSortOrder(1);
-		NonemtTabulu.removeAll();
-		NonemtTabulu.add(scrollN);
-		NonemtTabulu.revalidate();
-		NonemtTabulu.repaint();
-		NonemtTabulu.setBackground(panel);
-		ProduktuParadisana.setGridColor(panel);
-		scrollN.getViewport().setBackground(Color.LIGHT_GRAY);
-		scrollN.setBackground(Color.LIGHT_GRAY);
-		
-		JTableHeader galvene = ProduktuParadisana.getTableHeader();
-		galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		galvene.setBackground(panel);
-		galvene.setForeground(textColor);
-   
-    } 
-	private void Remove() {
-		nonemt = new JPanel(new BorderLayout());
-        nonemt.setBackground(panel);
-        
-        JPanel forma = new JPanel(new GridLayout(0,1,10,10));
-        forma.setBackground(panel);
-        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
-       
-        NonemtTabulu = new JPanel();
-        forma.add(NonemtTabulu);
-        
-		 nonemtProduktu = createButton("Noņemt produktu/s","remove.png");
-		 forma.add(nonemtProduktu);
-			
-		 nonemtProduktu.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					
-					if (ProduktuParadisana.isEditing()) {
-					    ProduktuParadisana.getCellEditor().stopCellEditing();
-					}
-					DefaultTableModel model = (DefaultTableModel) ProduktuParadisana.getModel();
-			            
-
-			        for (int viewRow = ProduktuParadisana.getRowCount() - 1; viewRow >= 0; viewRow--) {
-			            Object checked = ProduktuParadisana.getValueAt(viewRow, 0);
-			         
-						
-			            if (Boolean.TRUE.equals(checked)) {
-			                int modelRow = ProduktuParadisana.convertRowIndexToModel(viewRow);
-
-			                int id = (int) model.getValueAt(modelRow, 1);
-			                ProduktuSaraksts.removeIf(p -> p.id == id);
-			                model.removeRow(modelRow);
-			            	}
-			        }
-				}
-				
-			});
-		nonemt.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
-		nonemt.add(forma, BorderLayout.CENTER);
-	}
-	// - REDIGESANAS LAPA
-	private void TabulaRediget() {
-		String[] columnNames = {"Rediģēt","ID","Nosaukums","Kategorija", "Skaits"};
-				
-	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][5];
-			   
-	    for(int i = 0;i<ProduktuSaraksts.size();i++) {
-			   Products p = ProduktuSaraksts.get(i);
-			   DatiHM[i][0] = Boolean.FALSE;
-			   DatiHM[i][1] = p.id;
-			   DatiHM[i][2] = p.nosaukums;
-			   DatiHM[i][3] = p.kategorija;
-			   DatiHM[i][4] = p.skaits;
-			    	
-			}
-		
-		DefaultTableModel model = new DefaultTableModel(DatiHM, columnNames) {
-			@Override
-	        public boolean isCellEditable(int row, int column) {
-	            return column == 0; // tikai checkbox kolonna
-	        }
-
-	        @Override
-	        public Class<?> getColumnClass(int column) {
-	            if (column == 0) {
-	                return Boolean.class; //checkbox
-	            }
-	            return Object.class;
-	        }
-	   
-	    
-		};
-		ProduktuParadisana = new JTable(model);
-			    
-		ProduktuParadisana.getColumnModel().getColumn(0)
-		.setCellRenderer(ProduktuParadisana.getDefaultRenderer(Boolean.class));
-		ProduktuParadisana.getColumnModel().getColumn(0)
-		.setCellEditor(ProduktuParadisana.getDefaultEditor(Boolean.class));
-			    
-				
-		JScrollPane scrollE = new JScrollPane(ProduktuParadisana);
-		ProduktuParadisana.setAutoCreateRowSorter(true);
-		TableRowSorter<?> SakartotE = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
-		SakartotE.toggleSortOrder(1);
-		TabulaRediget.removeAll();
-		TabulaRediget.add(scrollE);
-		TabulaRediget.revalidate();
-		TabulaRediget.repaint();
-		TabulaRediget.setBackground(panel);
-		ProduktuParadisana.setGridColor(panel);
-		scrollE.getViewport().setBackground(Color.LIGHT_GRAY);
-		scrollE.setBackground(Color.LIGHT_GRAY);				
-		JTableHeader galvene = ProduktuParadisana.getTableHeader();
-		galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		galvene.setBackground(panel);
-		galvene.setForeground(textColor);
-	}
-	private void Edit() {
-		rediget = new JPanel(new BorderLayout());
-        rediget.setBackground(panel);
-        
-        rediget.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
-        
-        JPanel forma = new JPanel(new GridLayout(0,1,10,10));
-        forma.setBackground(panel);
-        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
-        
-        TabulaRediget = new JPanel();
-        forma.add(TabulaRediget);
-        
-        JButton redigetPoga = new JButton("Rediģēt");
-        forma.add(redigetPoga);
-        
-        redigetPoga.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (ProduktuParadisana.isEditing()) {
-				    ProduktuParadisana.getCellEditor().stopCellEditing();
-				}
-
-				DefaultTableModel model = (DefaultTableModel) ProduktuParadisana.getModel();
-
-				Integer izveletaisId = null;
-				int skaititajs = 0;
-
-				for (int viewRow = 0; viewRow < ProduktuParadisana.getRowCount(); viewRow++) {
-				    Object checked = ProduktuParadisana.getValueAt(viewRow, 0);
-				    if (Boolean.TRUE.equals(checked)) {
-				    	skaititajs++;
-				        int modelRow = ProduktuParadisana.convertRowIndexToModel(viewRow);
-				        izveletaisId = (Integer) model.getValueAt(modelRow, 1);
-				    }
-				}
-
-				if (skaititajs == 0) {
-				    JOptionPane.showMessageDialog(rediget, "Izvēlies, kuru produktu vēlies rediģēt!");
-				    return;
-				}
-				if (skaititajs > 1) {
-				    JOptionPane.showMessageDialog(rediget, "Izvēlies tikai vienu produktu!");
-				    return;
-				}
-
-				Products p = null;
-				for (Products pr : ProduktuSaraksts) {
-				    if (pr.id == izveletaisId) { p = pr; break; }
-				}
-				if (p == null) return;
-
-				
-				editTarget = p;
-				editNosaukums.setText(p.nosaukums);
-				editKategorija.setSelectedItem(p.kategorija);
-				editSkaits.setText(String.valueOf(p.skaits));
-
-				cardLayout.show(cardPanel, "Rediģēt opciju");
-			}
-        	
+                products.add(new Product(products.size() + 1, name, k.getSelectedItem().toString(), s.getSelectedItem().toString(), count));
+                n.setText(""); sk.setText("");
+                refreshData();
+                layout.show(cards, "MENU");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Ievadiet korektus datus!");
+            }
         });
         
-        rediget.add(forma, BorderLayout.CENTER); 
+        btnRow.add(back); btnRow.add(save);
+        g.gridx=0; g.gridy=4; g.gridwidth=2; g.insets = new Insets(40, 0, 0, 0);
+        form.add(btnRow, g);
+
+        p.add(form);
+        return p;
+    }
+
+    private JPanel createListPanel(boolean editMode) {
+        JPanel p = new JPanel(new BorderLayout());
+        p.setOpaque(false);
+
+        JLabel l = new JLabel(editMode ? "REDIĢĒŠANA" : "INVENTĀRA SARAKSTS");
+        l.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        l.setHorizontalAlignment(SwingConstants.CENTER);
+        l.setBorder(BorderFactory.createEmptyBorder(50, 0, 30, 0));
+        p.add(l, BorderLayout.NORTH);
+
+        String[] cols = editMode ? new String[]{" ", "ID", "Nosaukums", "Kategorija", "Stāvoklis", "Skaits"} 
+                                 : new String[]{"ID", "Nosaukums", "Kategorija", "Stāvoklis", "Skaits"};
         
-	}
-	private void EditOption() {
-		redigetOpciju = new JPanel(new BorderLayout());
-	    redigetOpciju.setBackground(panel);
-
-
-	    JButton back = new JButton("<- Atpakaļ");
-	    back.setFocusPainted(false);
-	    back.setBackground(btnNormal);
-	    back.setForeground(textColor);
-	    back.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-	    back.setBorder(new RoundedBorder(12));
-	    back.setContentAreaFilled(false);
-	    back.addActionListener(e -> cardLayout.show(cardPanel, "Rediģēt"));
-	    redigetOpciju.add(back, BorderLayout.NORTH);
-
-	    JPanel forma = new JPanel(new GridLayout(0,1,10,10));
-	    forma.setBackground(panel);
-	    forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
-
-	    editNosaukums = new JTextField(16);
-	    editNosaukums.setBackground(btnNormal);
-	    editNosaukums.setForeground(textColor);
-
-	    String[] izveles = {"Pārtika","Elektronika","Būvmateriāli","Higiēna","Cits.."};
-	    editKategorija = new JComboBox<>(izveles);
-
-	    editSkaits = new JTextField(16);
-	    editSkaits.setBackground(btnNormal);
-	    editSkaits.setForeground(textColor);
-
-	    JButton apstiprinat = createButton("Apstiprināt", "");
-	    JButton atcelt = createButton("Atcelt", "");
-
-	    forma.add(editNosaukums);
-
-	    forma.add(editKategorija);
-
-	    forma.add(editSkaits);
-	    forma.add(apstiprinat);
-	    forma.add(atcelt);
-
-	    apstiprinat.addActionListener(e -> {
-	        if (editTarget == null) return;
-
-	        String n = editNosaukums.getText().trim();
-	        String k = (String) editKategorija.getSelectedItem();
-	        String sTxt = editSkaits.getText().trim();
-
-	        if (n.isEmpty() || sTxt.isEmpty()) {
-	            JOptionPane.showMessageDialog(redigetOpciju, "Aizpildi visus laukus!");
-	            return;
-	        }
-
-	        int s;
-	        try { s = Integer.parseInt(sTxt); }
-	        catch (NumberFormatException ex) {
-	            JOptionPane.showMessageDialog(redigetOpciju, "Skaitam jābūt skaitlim!");
-	            return;
-	        }
-
-	   
-	        editTarget.nosaukums = n;
-	        editTarget.kategorija = k;
-	        editTarget.skaits = s;
-
-	  
-	        TabulaRediget();
-	        cardLayout.show(cardPanel, "Rediģēt");
-	        editTarget = null;
-	    });
-
-	    atcelt.addActionListener(e -> {
-	        editTarget = null;
-	        cardLayout.show(cardPanel, "Rediģēt");
-	    });
-
-	    redigetOpciju.add(forma, BorderLayout.CENTER);
-	}
-	
-	// - PARADISANAS LAPA
-	private void ParaditTabulu() {
-		String[] columnNames = {"ID","Nosaukums","Kategorija","Skaits"};
-		
-	    Object[][] DatiHM = new Object[ProduktuSaraksts.size()][4];
-	    
-	    for(int i = 0;i<ProduktuSaraksts.size();i++ ) {
-	    	Products p = ProduktuSaraksts.get(i);
-	    	DatiHM[i][0] = p.id;
-	    	DatiHM[i][1] = p.nosaukums;
-	    	DatiHM[i][2] = p.kategorija;
-	    	DatiHM[i][3] = p.skaits;
-	    }
-		
-		ProduktuParadisana = new JTable(DatiHM, columnNames) {
-			public boolean editCellAt(int row, int column, EventObject e) {
-	    		return false;
-	    	}
-		};
-		JScrollPane scrollN = new JScrollPane(ProduktuParadisana);
-		
-		ProduktuParadisana.setAutoCreateRowSorter(true);
-		TableRowSorter<?> Sakartot = (TableRowSorter<?>) ProduktuParadisana.getRowSorter();
-		Sakartot.toggleSortOrder(0);
-	
-		ParaditTabulu.removeAll();
-		ParaditTabulu.add(scrollN);
-		ParaditTabulu.revalidate();
-		ParaditTabulu.repaint();
-		ParaditTabulu.setBackground(panel);
-		ProduktuParadisana.setGridColor(panel);
-		
-		JTableHeader galvene = ProduktuParadisana.getTableHeader();
-		galvene.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		galvene.setBackground(panel);
-		galvene.setForeground(textColor);
-	}
-	private void Show() {
-		paradit = new JPanel(new BorderLayout());
-		paradit.setBackground(panel);
-		
-		JPanel forma = new JPanel(new GridLayout(0,1,10,10));
-        forma.setBackground(panel);
-        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        DefaultTableModel m = new DefaultTableModel(new Object[][]{}, cols) {
+            @Override public Class<?> getColumnClass(int c) { return (editMode && c == 0) ? Boolean.class : Object.class; }
+            @Override public boolean isCellEditable(int r, int c) { return editMode && c == 0; }
+        };
         
-        ParaditTabulu = new JPanel();
-        forma.add(ParaditTabulu);
-		
-		paradit.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
-		paradit.add(forma, BorderLayout.CENTER);
-	}
-		
-	// - TEKSTA FAILA IZVEIDE
-	private void Text() {
-		teksts = new JPanel(new BorderLayout());
-		teksts.setBackground(panel);
-		
-		JPanel forma = new JPanel(new GridLayout(0,1,10,10));
-        forma.setBackground(panel);
-        forma.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        if(editMode) editTableModel = m; else viewTableModel = m;
+
+        JTable t = new JTable(m);
+        t.setRowHeight(50);
+        t.setBackground(ModernsDizains.BG_DARK);
+        t.setFillsViewportHeight(true);
+        t.setGridColor(new Color(40, 40, 45));
         
-        JButton IzveidotTekstu = createButton("Izveidot teksta failu","list.png");
-		forma.add(IzveidotTekstu);
-		
-		IzveidotTekstu.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				try {
-					fl = new FileWriter("Saraksts.txt");
-					fl.write(TextString());
-					fl.close();
-					JOptionPane.showMessageDialog(null,"Fails tika izveidots!","Apstiprināts",JOptionPane.INFORMATION_MESSAGE);
-				}catch (IOException ex) {
-					JOptionPane.showMessageDialog(null,"Kļūda","Error",JOptionPane.ERROR_MESSAGE);
-				}
-			}	
-		});
 
-		teksts.add(createBackButton("Galvenā lapa"), BorderLayout.NORTH); 
-		teksts.add(forma, BorderLayout.CENTER);
-	}
-	private int TextString() throws IOException {
-		for(Products p : ProduktuSaraksts) {
-			int ID = p.id;
-			String nosaukums = p.nosaukums;
-			String kategorija = p.kategorija;
-			int skaits = p.skaits;
-			fl.write(ID+" | | "+nosaukums+" | | "+kategorija+" | | "+skaits+"\n");
-		}
-		return 0;
-	}
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setBackground(ModernsDizains.BG_DARK);
+        centerRenderer.setForeground(Color.WHITE);
+        centerRenderer.setBorder(null); 
 
-	
-	
-	// DIZAINS
-	private JButton createButton(String text, String iconFile) {
-		JButton btn = new JButton(text);
+        for(int i=(editMode?1:0); i<t.getColumnCount(); i++) {
+            t.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
 
-        try { btn.setIcon(new ImageIcon(iconFile)); } catch (Exception ignore) {}
-
-        btn.setHorizontalAlignment(SwingConstants.CENTER);
-        btn.setIconTextGap(15);
+        JScrollPane scroll = new JScrollPane(t);
+        scroll.getViewport().setBackground(ModernsDizains.BG_DARK);
+        scroll.setBorder(BorderFactory.createLineBorder(new Color(50, 50, 55)));
         
-        btn.setFocusPainted(false);
-        btn.setForeground(textColor);
-        btn.setBackground(btnNormal);
-        btn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        btn.setBorder(new RoundedBorder(12));
-        btn.setContentAreaFilled(false);
+        JPanel container = new JPanel(new BorderLayout(0, 30));
+        container.setOpaque(false);
+        container.setBorder(BorderFactory.createEmptyBorder(0, 80, 60, 80));
+        container.add(scroll, BorderLayout.CENTER);
 
-        btn.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { btn.setBackground(btnHover); btn.repaint(); }
-            public void mouseExited(MouseEvent e) { btn.setBackground(btnNormal); btn.repaint(); }
-        });
+        JPanel btm = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 0));
+        btm.setOpaque(false);
+        if(editMode) {
+            JButton d = new JButton("DZĒST ATLASĪTO");
+            d.setBackground(new Color(180, 40, 40));
+            d.addActionListener(e -> {
+                for(int i = m.getRowCount()-1; i>=0; i--) if((Boolean)m.getValueAt(i,0)) products.remove(i);
+                refreshData();
+            });
+            btm.add(d);
+        }
+        JButton b = new JButton("ATPAKAĻ");
+        b.addActionListener(e -> layout.show(cards, "MENU"));
+        btm.add(b);
+        container.add(btm, BorderLayout.SOUTH);
 
-        return btn;
-	}
-	
-	private JButton createBackButton(String string) {
-		//atpkal
-		JButton back = new JButton ("<- Atpakaļ");
-		back.setFocusPainted(false);
-        back.setBackground(btnNormal);
-        back.setForeground(textColor);
-        back.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        back.setBorder(new RoundedBorder(12));
-        back.setContentAreaFilled(false);
-        back.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { back.setBackground(btnHover); back.repaint(); }
-            public void mouseExited(MouseEvent e) { back.setBackground(btnNormal); back.repaint(); }
-        });
-         // aizsuta mus atpakal uz main menu , pirmais kods augsa
-        back.addActionListener(e -> cardLayout.show(cardPanel, "Galvenā lapa"));
-        return back;
-	}
-	
-	class RoundedBorder extends AbstractBorder {
-        private int radius;
-        RoundedBorder(int r) { radius = r; }
+        p.add(container, BorderLayout.CENTER);
+        return p;
+    }
 
-        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
-            g.setColor(new Color(120, 120, 120));
-            g.drawRoundRect(x, y, w - 1, h - 1, radius, radius);
+    private void styleFieldLabel(JPanel p, String txt, int y, GridBagConstraints g) {
+        JLabel l = new JLabel(txt);
+        l.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        g.gridx=0; g.gridy=y; g.gridwidth=1; p.add(l, g);
+    }
+
+    private void refreshData() {
+        if(viewTableModel != null) {
+            viewTableModel.setRowCount(0);
+            for(Product p : products) viewTableModel.addRow(new Object[]{p.id, p.name, p.category, p.condition, p.count});
+        }
+        if(editTableModel != null) {
+            editTableModel.setRowCount(0);
+            for(Product p : products) editTableModel.addRow(new Object[]{false, p.id, p.name, p.category, p.condition, p.count});
         }
     }
-	
-    public static void main(String[] args) {
-        new IPS();
+
+    private void exportToTxt() {
+        try (FileWriter w = new FileWriter("Inventars.txt")) {
+
+            w.write(String.format("%-5s | %-15s | %-20s | %-15s | %-10s\n", "ID", "STĀVOKLIS", "NOSAUKUMS", "KATEGORIJA", "SKAITS"));
+            w.write("------------------------------------------------------------------------------\n");
+            
+            for(Product p : products) {
+
+                w.write(String.format("%-5d | %-15s | %-20s | %-15s | %-10d\n", 
+                        p.id, p.condition, p.name, p.category, p.count));
+            }
+            JOptionPane.showMessageDialog(frame, "Dati eksportēti (ID | STĀVOKLIS | NOSAUKUMS...)");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Kļūda eksportējot!");
+        }
     }
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-	}
+    static class Product {
+        int id, count; String name, category, condition;
+        Product(int i, String n, String cat, String con, int cou) { id=i; name=n; category=cat; condition=con; count=cou; }
+    }
 }
-
-
